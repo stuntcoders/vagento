@@ -3,6 +3,9 @@
 /robots.txt
 /sitemap.xml
 
+# Vagrant VM
+.vagrant/*
+
 # Dynamic Magento data that doesn't need to be in the repo
 /var/*
 /media/*
@@ -14,6 +17,7 @@
 
 # Various IDE &#038; OS files that should never be committed
 .DS_Store
+.sass-cache/
 *.swp
 *.lock
 __MACOSX
@@ -28,6 +32,7 @@ build.properties
 .settings
 .buildpath
 /_notes/*
+config.codekit
 
 # Explicitly mark as "do not exclude/ignore these from GIT repository"
 !/app/.htaccess

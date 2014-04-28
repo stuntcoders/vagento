@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source config.sh
+
 # Update
 # --------------------
 apt-get update
@@ -11,25 +13,29 @@ apt-get install -y php5
 apt-get install -y libapache2-mod-php5
 apt-get install -y php5-mysql php5-curl php5-gd php5-intl php-pear php5-imap php5-mcrypt php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-apc
 
-# Install 
+# Install tools StuntCoders needs
 # --------------------
 apt-get install -y vim
 
+gem update --system
+gem install bourbon
 
 
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
 rm -rf /var/www
-mkdir /vagrant/httpdocs
-ln -fs /vagrant/httpdocs /var/www
+if [ ! -d "/vagrant/httpdocs" ]; then
+  mkdir /vagrant/httpdocs
+fi
+ln -fs /vagrant /var/www
 
 # Replace contents of default Apache vhost
 # --------------------
 VHOST=$(cat <<EOF
 <VirtualHost *:80>
-  DocumentRoot "/var/www"
+  DocumentRoot "/vagrant"
   ServerName localhost
-  <Directory "/var/www">
+  <Directory "/vagrant">
     AllowOverride All
   </Directory>
 </VirtualHost>
@@ -52,66 +58,51 @@ mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
 mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
 mysql -u root -e "FLUSH PRIVILEGES"
 
-cd /vagrant/httpdocs/
+cd /vagrant/
 
-if [ ! -f "/vagrant/httpdocs/index.php" ]; then
-	wget http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
-	tar -zxvf magento-1.8.1.0.tar.gz
-	wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
-	tar -zxvf magento-sample-data-1.6.1.0.tar.gz
-	mv magento-sample-data-1.6.1.0/media/* magento/media/
-	mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento/data.sql
-	mv magento/* magento/.htaccess* .
-	chmod -R o+w media var
-	mysql -h localhost -u magentouser -ppassword magentodb < data.sql
-	chmod o+w var var/.htaccess app/etc
-	rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
+if [ ! -f "/vagrant/index.php" ]; then
+    wget http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
+    tar -zxvf magento-1.8.1.0.tar.gz
+    wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
+    tar -zxvf magento-sample-data-1.6.1.0.tar.gz
+    mv magento-sample-data-1.6.1.0/media/* magento/media/
+    mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento/data.sql
+    mv magento/* magento/.htaccess* .
+    chmod -R o+w media var
+    mysql -h localhost -u magentouser -ppassword magentodb < data.sql
+    chmod o+w var var/.htaccess app/etc
+    rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
 fi
 
-if [ ! -f "/vagrant/httpdocs/app/etc/local.xml" ]; then
-    MAGENTO_ETC=$(cat <<EOF
-    <?xml version="1.0"?>
-    <config>
-        <global>
-            <install>
-                <date><![CDATA[Tue, 31 Dec 2013 10:29:50 +0000]]></date>
-            </install>
-            <crypt>
-                <key><![CDATA[c49db285e6ff11bb01ee598310b84269]]></key>
-            </crypt>
-            <disable_local_modules>false</disable_local_modules>
-            <resources>
-                <db>
-                    <table_prefix><![CDATA[]]></table_prefix>
-                </db>
-                <default_setup>
-                    <connection>
-                        <host><![CDATA[localhost]]></host>
-                        <username><![CDATA[magentouser]]></username>
-                        <password><![CDATA[password]]></password>
-                        <dbname><![CDATA[magentodb]]></dbname>
-                        <initStatements><![CDATA[SET NAMES utf8]]></initStatements>
-                        <model><![CDATA[mysql4]]></model>
-                        <type><![CDATA[pdo_mysql]]></type>
-                        <pdoType><![CDATA[]]></pdoType>
-                        <active>1</active>
-                    </connection>
-                </default_setup>
-            </resources>
-            <session_save><![CDATA[files]]></session_save>
-        </global>
-        <admin>
-            <routers>
-                <adminhtml>
-                    <args>
-                        <frontName><![CDATA[admin]]></frontName>
-                    </args>
-                </adminhtml>
-            </routers>
-        </admin>
-    </config>
-    EOF
-    )
-
-    echo "$MAGENTO_ETC" > /vagrant/httpdocs/app/etc/local.xml
+if [ ! -f "/vagrant/app/etc/local.xml" ]; then
+php -f /vagrant/install.php -- \
+--license_agreement_accepted "yes" \
+--locale "en_US" \
+--timezone "Europe/Budapest" \
+--default_currency "NOK" \
+--db_host "localhost" \
+--db_name "magentodb" \
+--db_user "magentouser" \
+--db_pass "password" \
+--url "$DOMAIN" \
+--use_rewrites "yes" \
+--use_secure "no" \
+--secure_base_url "" \
+--use_secure_admin "no" \
+--admin_firstname "Dejan" \
+--admin_lastname "Jacimovic" \
+--admin_email "dejan.jacimovic@gmail.com" \
+--admin_username "admin" \
+--admin_password "m123123"
 fi
+
+# Add SASS watch on every boot
+# --------------------
+SASS=$(cat <<EOF
+#! /bin/sh
+cd /vagrant/skin/frontend/$PROJECT/default/
+sass --watch sass:css
+EOF
+)
+
+sudo bash -c "echo '$SASS' > /etc/rc0.d/sasswatch.sh"
