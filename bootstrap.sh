@@ -43,6 +43,8 @@ EOF
 )
 
 echo "$VHOST" > /etc/apache2/sites-enabled/000-default
+sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/conf.d/name'
+sudo bash -c "echo '127.0.0.1 $DOMAIN' >> /etc/hosts"
 
 a2enmod rewrite
 service apache2 restart
