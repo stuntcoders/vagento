@@ -41,7 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder "./", "/vagrant/httpdocs", id: "vagrant-root",
-    owner: "vagrant", group: "www-data", mount_options: ["dmode=777,fmode=777"]
+  config.vm.synced_folder "./", "/vagrant", id: "vagrant-root",
+    owner: "www-data", group: "www-data", mount_options: ["dmode=777,fmode=777"]
 end
 

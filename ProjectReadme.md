@@ -13,7 +13,7 @@ Setup Instructions
 vagrant up
 ```
 
-Then go to "http://stuntgento.local/":http://stuntgento.local/
+Then go to [http://stuntgento.local/](http://stuntgento.local/)
 
 Credentials:
  
