@@ -34,6 +34,7 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
 
 	ruby -pi -e "gsub(/stuntgento/, '$PROJECT')" config.sh
 	ruby -pi -e "gsub(/stuntgento.local/, '$DOMAIN')" config.sh
+	ruby -pi -e "gsub(/DOMAIN=\"\"/, 'DOMAIN=\"$DOMAIN\"')" config.sh
 	ruby -pi -e "gsub(/192.168.33.11/, '$IP')" config.sh
 	ruby -pi -e "gsub(/ALREADY_CONFIGURED=\"n\"/, 'ALREADY_CONFIGURED=\"y\"')" config.sh
 

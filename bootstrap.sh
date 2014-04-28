@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source config.sh
+source /vagrant/config.sh
 
 # Update
 # --------------------
