@@ -42,8 +42,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
   config.vm.synced_folder "./", "/vagrant/httpdocs", id: "vagrant-root",
-    owner: "vagrant", group: "www-data", mount_options: ["dmode=775,fmode=664"]
-    
-  config.vm.synced_folder "media", "/vagrant/httpdocs/media", owner: "vagrant", group: "www-data", mount_options: ["dmode=777,fmode=777"]
+    owner: "vagrant", group: "www-data", mount_options: ["dmode=777,fmode=777"]
 end
 
