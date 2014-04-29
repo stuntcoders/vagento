@@ -43,7 +43,7 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
 fi
 
 # Check if IP already exists in /etc/hosts
-if [grep -Fxq "$IP" /etc/hosts] then
+if grep -Fxq "$IP" /etc/hosts; then
 	echo "------------------------------"
 	echo '$IP is already written in /etc/hosts... skipping this part...'
 	echo "Please check if line '$IP $DOMAIN' exists"
