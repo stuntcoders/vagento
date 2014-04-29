@@ -2,14 +2,13 @@
 
 source config.sh
 
-while getopts p:d:i:h: option
+while getopts p:d:i: option
 do
     case "${option}"
     in
         p) PROJECT=${OPTARG};;
         d) DOMAIN=${OPTARG};;
         i) IP=${OPTARG};;
-        h) HOSTS=${OPTARG};;
     esac
 done
 
@@ -43,16 +42,20 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
 	mv ProjectReadme.md Readme.md
 fi
 
-if [ "$HOSTS" == "y" ]; then
-    echo 'Writing to /etc/hosts...'
-    sudo bash -c "echo '$IP $DOMAIN' >> /etc/hosts"
+# Check if IP already exists in /etc/hosts
+if [grep -Fxq "$IP" /etc/hosts] then
+	echo '$IP is already written in /etc/hosts... skipping this part...'
+else
+	echo 'Writing to /etc/hosts...'
+	sudo bash -c "echo '$IP $DOMAIN' >> /etc/hosts"
 fi
 
 vagrant up
 
+echo "------------------------------"
 echo "Your setup should be ready. Visit: http://$DOMAIN/ to see the results!"
 echo "If not... run vagrant destroy and then vagrant up again."
-echo ""
+echo "------------------------------"
 
 if [ "$ALREADY_CONFIGURED" == "n" ]; then
     git commit -am 'Project has been initialized...'

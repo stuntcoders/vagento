@@ -24,9 +24,6 @@ gem install bourbon
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
 rm -rf /var/www
-if [ ! -d "/vagrant/httpdocs" ]; then
-  mkdir /vagrant/httpdocs
-fi
 ln -fs /vagrant /var/www
 
 # Replace contents of default Apache vhost
