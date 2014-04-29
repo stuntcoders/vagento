@@ -78,7 +78,7 @@ php -f /vagrant/install.php -- \
 --license_agreement_accepted "yes" \
 --locale "en_US" \
 --timezone "Europe/Budapest" \
---default_currency "NOK" \
+--default_currency "$CURRENCY" \
 --db_host "localhost" \
 --db_name "magentodb" \
 --db_user "magentouser" \
@@ -88,9 +88,9 @@ php -f /vagrant/install.php -- \
 --use_secure "no" \
 --secure_base_url "" \
 --use_secure_admin "no" \
---admin_firstname "Dejan" \
---admin_lastname "Jacimovic" \
---admin_email "dejan.jacimovic@gmail.com" \
+--admin_firstname "Stunt" \
+--admin_lastname "Coders" \
+--admin_email "$EMAIL" \
 --admin_username "admin" \
 --admin_password "m123123"
 fi

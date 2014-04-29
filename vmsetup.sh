@@ -2,13 +2,15 @@
 
 source config.sh
 
-while getopts p:d:i: option
+while getopts p:d:i:c:e: option
 do
     case "${option}"
     in
         p) PROJECT=${OPTARG};;
         d) DOMAIN=${OPTARG};;
         i) IP=${OPTARG};;
+		c) CURRENCY=${OPTARG};;
+		e) EMAIL=${OPTARG};;
     esac
 done
 
