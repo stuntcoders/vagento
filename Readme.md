@@ -1,30 +1,28 @@
 Goal
 ------------------
-Setup Magento with sample data as starting point for development.
+Setup Magento 1.8.1.0 with 1.6.1.0 sample data as starting point for development.
 
-Made for Magento 1.8.1.0 and 1.6.1.0 sample data.
 
-Setup Instructions
+Make sure you have following installed on your system:
 -------------------
- * Make sure you have Ruby installed
- * Install Virtual Box: [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
- * Install Vagrant for your platform: [https://www.vagrantup.com/downloads.html](https://www.vagrantup.com/downloads.html)
- * Fork this project
- * Clone it to your computer, and enter the folder
+ * Ruby: [https://www.ruby-lang.org/](https://www.ruby-lang.org/)
+ * Virtual Box: [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
+ * Vagrant: [https://www.vagrantup.com/downloads.html](https://www.vagrantup.com/downloads.html)
 
-```bash
-# Run the configuration script with custom options
-bash vmsetup.sh -p projectname -i 192.168.33.21
+Follow instructions:
+-------------------
+ * Make a project directory `mkdir projectname && cd projectname`
+ * Run `curl http://stuntcoders.com/vagento | bash` in your terminal
+ * Follow instructions from output to setup and install Magento
 
-# Additional parameter can be applied
-# -d domainname.local (default will be "$PROJECTNAME.local")
-# 
-# sudo bash vmsetup.sh -p projectname -d domainname.local -i 192.168.33.21
-```
 
-Credentials:
-
+Once Magento and Vagrant are installed you can use following credentials:
+-------------------
 |       | User        | Password |
 | ----- | ------------| -------- |
 | MySQL | magentouser | password |
 | Admin | admin       | m123123  |
+
+
+To ssh to your virtual box use `vagrant ssh`, and go to `cd /vagrant`.
+This is where your Magento is installed.
