@@ -1,4 +1,4 @@
-#/bin/bash!
+#!/bin/bash
 
 source config.sh
 
@@ -44,10 +44,15 @@ fi
 
 # Check if IP already exists in /etc/hosts
 if [grep -Fxq "$IP" /etc/hosts] then
+	echo "------------------------------"
 	echo '$IP is already written in /etc/hosts... skipping this part...'
+	echo "Please check if line '$IP $DOMAIN' exists"
+	echo "------------------------------"
 else
+	echo "------------------------------"
 	echo 'Writing to /etc/hosts...'
 	sudo bash -c "echo '$IP $DOMAIN' >> /etc/hosts"
+	echo "------------------------------"
 fi
 
 vagrant up
@@ -58,7 +63,12 @@ echo "If not... run vagrant destroy and then vagrant up again."
 echo "------------------------------"
 
 if [ "$ALREADY_CONFIGURED" == "n" ]; then
-    git commit -am 'Project has been initialized...'
-	git push origin master
+	#check if in git repo
+	if [ ! -d .git ]; then
+		git init
+		git add .
+    	git commit -am 'Vagento project has been initialized...'
+    fi
+
 	echo 'Other team members can now join and use your environment settings. Happy coding! :)'
 fi
