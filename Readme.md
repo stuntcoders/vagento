@@ -16,7 +16,7 @@ Once you have everything installed, setting up your Magento sample project will 
 Use simple setup steps
 -------------------
  * Make a project directory `mkdir projectname && cd projectname`
- * Run `curl http://stuntcoders.com/vagento | bash` in your terminal
+ * Run `curl http://vagento.stuntcoders.com/ | bash` in your terminal
  * Follow instructions from output to setup Vagrant and install Magento
 
 
