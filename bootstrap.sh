@@ -13,10 +13,38 @@ apt-get install -y php5
 apt-get install -y libapache2-mod-php5
 apt-get install -y php5-mysql php5-curl php5-gd php5-intl php-pear php5-imap php5-mcrypt php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-apc
 
-# Install tools StuntCoders needs
+# Install postfix
+# --------------------
+debconf-set-selections <<< "postfix postfix/mailname string $DOMAIN"
+debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+apt-get install -y postfix
+
+# Install vim, curl, git
 # --------------------
 apt-get install -y vim
+apt-get install curl
+apt-get install git
+apt-get install wget
 
+# Composer
+# --------------------
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+
+# Magerun
+# --------------------
+wget https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+sudo chmod +x ./n98-magerun.phar
+sudo cp ./n98-magerun.phar /usr/local/bin/
+
+# Modman
+# --------------------
+wget https://raw.githubusercontent.com/colinmollenhour/modman/master/modman
+sudo chmod +x ./modman
+sudo cp ./modman /usr/local/bin/
+
+# Update Gem and install bourbon
+# --------------------
 gem update --system
 gem install bourbon
 
