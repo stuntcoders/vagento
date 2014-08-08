@@ -21,14 +21,20 @@ apt-get install -y postfix
 
 # Install vim, curl, git
 # --------------------
-apt-get install -y vim
-apt-get install curl
-apt-get install git
-apt-get install wget
+apt-get install -y vim git curl wget
+
+# Install nodejs (with npm), and then grunt and yeoman
+# --------------------
+apt-get install python-software-properties
+apt-add-repository ppa:chris-lea/node.js
+apt-get install nodejs
+
+npm install -g grunt-cli grunt-init yo
 
 # Composer
 # --------------------
 curl -sS https://getcomposer.org/installer | php
+sudo chmod +x ./composer.phar
 mv composer.phar /usr/local/bin/composer
 
 # Magerun
@@ -43,6 +49,12 @@ wget https://raw.githubusercontent.com/colinmollenhour/modman/master/modman
 sudo chmod +x ./modman
 sudo cp ./modman /usr/local/bin/
 
+# Vagento
+# --------------------
+wget http://vagento.stuntcoders.com/vagento.sh
+sudo chmod +x ./vagento.sh
+sudo mv ./vagento.sh /usr/local/bin/vagento
+
 # Update Gem and install bourbon
 # --------------------
 gem update --system
@@ -52,6 +64,9 @@ gem install bourbon
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
 rm -rf /var/www
+if [ ! -d "/vagrant/httpdocs" ]; then
+  mkdir /vagrant/httpdocs
+fi
 ln -fs /vagrant /var/www
 
 # Replace contents of default Apache vhost
@@ -81,55 +96,10 @@ export DEBIAN_FRONTEND=noninteractive
 # Install MySQL quietly
 apt-get -q -y install mysql-server-5.5
 
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
-mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
-mysql -u root -e "FLUSH PRIVILEGES"
-
 cd /vagrant/
 
-if [ ! -f "/vagrant/index.php" ]; then
-    wget http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
-    tar -zxvf magento-1.8.1.0.tar.gz
-    wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
-    tar -zxvf magento-sample-data-1.6.1.0.tar.gz
-    mv magento-sample-data-1.6.1.0/media/* magento/media/
-    mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento/data.sql
-    mv magento/* magento/.htaccess* .
-    chmod -R o+w media var
-    mysql -h localhost -u magentouser -ppassword magentodb < data.sql
-    chmod o+w var var/.htaccess app/etc
-    rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
-fi
-
-if [ ! -f "/vagrant/app/etc/local.xml" ]; then
-php -f /vagrant/install.php -- \
---license_agreement_accepted "yes" \
---locale "en_US" \
---timezone "Europe/Budapest" \
---default_currency "$CURRENCY" \
---db_host "localhost" \
---db_name "magentodb" \
---db_user "magentouser" \
---db_pass "password" \
---url "$DOMAIN" \
---use_rewrites "yes" \
---use_secure "no" \
---secure_base_url "" \
---use_secure_admin "no" \
---admin_firstname "Stunt" \
---admin_lastname "Coders" \
---admin_email "$EMAIL" \
---admin_username "admin" \
---admin_password "m123123"
-fi
-
-# Add SASS watch on every boot
-# --------------------
-SASS=$(cat <<EOF
-#! /bin/sh
-cd /vagrant/skin/frontend/$PROJECT/default/
-sass --watch sass:css
-EOF
-)
-
-sudo bash -c "echo '$SASS' > /etc/rc0.d/sasswatch.sh"
+vagento setup $PROJECT $DOMAIN $IP $SITE_FOLDER $CURRENCY $LOCALE
+vagento install magento
+vagento install magento sample
+vagento install wp
+vagento install grunt
