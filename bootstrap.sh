@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /vagrant/config.sh
+source /vagrant/Vagentofile
 
 # Update
 # --------------------
