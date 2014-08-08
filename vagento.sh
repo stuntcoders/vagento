@@ -185,8 +185,8 @@ function install_magento {
 
     cd $BASE_DIR
 
-    mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb1"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb1.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
 
 #    n98-magerun.phar install --dbHost="localhost" --dbUser="magentouser" --dbPass="password" --dbName="magentodb1" \
