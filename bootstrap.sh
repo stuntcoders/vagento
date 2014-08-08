@@ -55,6 +55,12 @@ wget http://vagento.stuntcoders.com/vagento.sh
 sudo chmod +x ./vagento.sh
 sudo mv ./vagento.sh /usr/local/bin/vagento
 
+# WP cli
+# --------------------
+curl -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/bin/wp
+
 # Update Gem and install bourbon
 # --------------------
 gem update --system
