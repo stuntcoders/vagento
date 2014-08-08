@@ -300,20 +300,18 @@ function install_wordpress {
     mysql -u root -e "FLUSH PRIVILEGES"
 
     if [ ! -f "$BASE_DIR/$SITE_FOLDER/wp-config.php" ]; then
-        curl -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wp-cli.phar
-        chmod +x wp-cli.phar & sudo mv wp-cli.phar /usr/bin/wp
 
-        if [ ! -d /vagrant/side ]; then
-            mkdir /vagrant/side
+        if [ ! -d "$BASE_DIR/$SITE_FOLDER/" ]; then
+            mkdir "$BASE_DIR/$SITE_FOLDER/"
         fi
 
-        cd /vagrant/side
+        cd "$BASE_DIR/$SITE_FOLDER/"
         wp core download
         wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 PHP
-       wp core install --url="http://$DOMAIN/side"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+       wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
     fi
 }
 
