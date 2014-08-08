@@ -104,8 +104,4 @@ apt-get -q -y install mysql-server-5.5
 
 cd /vagrant/
 
-vagento setup $PROJECT $DOMAIN $IP $SITE_FOLDER $CURRENCY $LOCALE
-vagento install magento
-vagento install magento sample
-vagento install wp
-vagento install grunt
+vagento
