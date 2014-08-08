@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source config.sh
+source Vagentofile
 
 while getopts p:d:i:c:e: option
 do
@@ -9,8 +9,8 @@ do
         p) PROJECT=${OPTARG};;
         d) DOMAIN=${OPTARG};;
         i) IP=${OPTARG};;
-		c) CURRENCY=${OPTARG};;
-		e) EMAIL=${OPTARG};;
+        c) CURRENCY=${OPTARG};;
+        e) EMAIL=${OPTARG};;
     esac
 done
 
@@ -33,13 +33,13 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
 	ruby -pi -e "gsub(/stuntgento.local/, '$DOMAIN')" ProjectReadme.md
 	ruby -pi -e "gsub(/192.168.33.11/, '$IP')" ProjectReadme.md
 
-	ruby -pi -e "gsub(/stuntgento/, '$PROJECT')" config.sh
-	ruby -pi -e "gsub(/stuntgento.local/, '$DOMAIN')" config.sh
-	ruby -pi -e "gsub(/DOMAIN=\"\"/, 'DOMAIN=\"$DOMAIN\"')" config.sh
-	ruby -pi -e "gsub(/192.168.33.11/, '$IP')" config.sh
-	ruby -pi -e "gsub(/NOK/, '$CURRENCY')" config.sh
-	ruby -pi -e "gsub(/hello@stuntcoders.com/, '$EMAIL')" config.sh
-	ruby -pi -e "gsub(/ALREADY_CONFIGURED=\"n\"/, 'ALREADY_CONFIGURED=\"y\"')" config.sh
+	ruby -pi -e "gsub(/stuntgento/, '$PROJECT')" Vagentofile
+	ruby -pi -e "gsub(/stuntgento.local/, '$DOMAIN')" Vagentofile
+	ruby -pi -e "gsub(/DOMAIN=\"\"/, 'DOMAIN=\"$DOMAIN\"')" Vagentofile
+	ruby -pi -e "gsub(/192.168.33.11/, '$IP')" Vagentofile
+	ruby -pi -e "gsub(/NOK/, '$CURRENCY')" Vagentofile
+	ruby -pi -e "gsub(/hello@stuntcoders.com/, '$EMAIL')" Vagentofile
+	ruby -pi -e "gsub(/ALREADY_CONFIGURED=\"n\"/, 'ALREADY_CONFIGURED=\"y\"')" Vagentofile
 
 	#Remove Readme.md and rename ProjectReadme.md to Readme.md
 	rm -rf Readme.md
@@ -71,8 +71,8 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
 	if [ ! -d .git ]; then
 		git init
 		git add .
-    	git commit -am 'Vagento project has been initialized...'
-    fi
+		git commit -am 'Vagento project has been initialized...'
+	fi
 
 	echo 'Other team members can now join and use your environment settings. Happy coding! :)'
 fi
