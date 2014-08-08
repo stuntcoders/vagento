@@ -35,6 +35,7 @@ build.properties
 config.codekit
 *.sublime-project
 *.sublime-workspace
+.modman/
 
 # Explicitly mark as "do not exclude/ignore these from GIT repository"
 !/app/.htaccess
