@@ -27,6 +27,7 @@ apt-get install -y vim git curl wget
 # --------------------
 apt-get install python-software-properties
 apt-add-repository ppa:chris-lea/node.js
+apt-get update
 apt-get install -y nodejs
 
 npm install -g grunt-cli grunt-init yo
