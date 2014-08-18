@@ -67,6 +67,12 @@ sudo mv wp-cli.phar /usr/bin/wp
 gem update --system
 gem install bourbon
 
+# Set default coding style for the project or overwrite the existing one with newest
+# --------------------
+if [ ! -f "/vagrant/.editorconfig" ]; then
+  wget https://raw.githubusercontent.com/stuntcoders/vagento/master/.editorconfig -O /vagrant/.editorconfig
+fi
+
 
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
