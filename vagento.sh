@@ -189,16 +189,6 @@ function install_magento {
     mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
 
-#    n98-magerun.phar install --dbHost="localhost" --dbUser="magentouser" --dbPass="password" --dbName="magentodb1" \
-#     --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.8.1.0" \
-#     --installationFolder="" --baseUrl="http://$DOMAIN/" --timezone "Europe/Budapest" \
-#     --defaultCurrency="$CURRENCY" --locale "$LOCALE"
-#
-#    #n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
-#    n98-magerun.phar admin:user:create vagento dejan@stuntcoders.com m123123 Dejan Jacimovic
-#    n98-magerun.phar admin:user:change-password admin m123123
-#
-
     if [ ! -f "$BASE_DIR/index.php" ]; then
         wget http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
         tar -zxvf magento-1.8.1.0.tar.gz
