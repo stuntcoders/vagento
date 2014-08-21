@@ -52,6 +52,7 @@ sudo cp ./modman /usr/local/bin/
 
 # Vagento
 # --------------------
+sudo rm -f vagento.sh /usr/local/bin/vagento
 wget http://vagento.stuntcoders.com/vagento.sh
 sudo chmod +x ./vagento.sh
 sudo mv ./vagento.sh /usr/local/bin/vagento
