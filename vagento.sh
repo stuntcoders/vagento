@@ -104,6 +104,8 @@ Global Commands:
 
   $(green)magento list modules$(normalize)      Lists all installed Mageto modules
   $(green)magento list web-settings$(normalize) Lists all DB configuration
+  $(green)magento load-db name.sql$(normalize)  Remove old and reload a new DB
+  $(green)magento set admin$(normalize)         Change password for admin to m123123
 
 "
 
@@ -228,32 +230,19 @@ function install_magento {
     n98-magerun.phar config:set web/seo/use_rewrites 1
 }
 
-function install_magento_sample {
-
-    cd $BASE_DIR
-
+function clean_magento_db {
+    
     # Drop and create DB
     mysql -u root -e "DROP DATABASE magentodb"
     mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
     mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
+}
 
-    # Import DB sample data
-    if [ ! -f "magento_sample_data_for_1.6.1.0.sql" ]; then
-        wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
-        tar -zxvf magento-sample-data-1.6.1.0.tar.gz
-
-        mv magento-sample-data-1.6.1.0/media/* media/
-        mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento_sample_data_for_1.6.1.0.sql
-
-        rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz
-    fi
-
-    mysql -h localhost -u magentouser -ppassword magentodb < magento_sample_data_for_1.6.1.0.sql
-
+function install_magento_defaults {
+    
     # Set administrator's new password
     mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
-
 
     # Set project theme
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='design/package/name';"
@@ -271,12 +260,34 @@ function install_magento_sample {
     mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/unsecure/base_url', 'http://$DOMAIN/');"
     mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', 'http://$DOMAIN/');"
 
+    # Set all notifications as read
+    mysql -u root -e "UPDATE magentodb.adminnotification_inbox SET is_read=1 WHERE 1=1;"
+}
+
+function install_magento_sample {
+
+    cd $BASE_DIR
+
+    clean_magento_db
+
+    # Import DB sample data
+    if [ ! -f "magento_sample_data_for_1.6.1.0.sql" ]; then
+        wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
+        tar -zxvf magento-sample-data-1.6.1.0.tar.gz
+
+        mv magento-sample-data-1.6.1.0/media/* media/
+        mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento_sample_data_for_1.6.1.0.sql
+
+        rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz
+    fi
+
+    mysql -h localhost -u magentouser -ppassword magentodb < magento_sample_data_for_1.6.1.0.sql
+
+    install_magento_defaults
+    
     # Set new homepage
     CONTENT='{{block type="catalog/product_list_random" category_id="18" template="catalog/product/list.phtml"}}'
     mysql -u root -e "UPDATE magentodb.cms_page SET content='$CONTENT', root_template='one_column' WHERE identifier='home';"
-
-    # Set all notifications as read
-    mysql -u root -e "UPDATE magentodb.adminnotification_inbox SET is_read=1 WHERE 1=1;"
 }
 
 function install_wordpress {
@@ -457,7 +468,6 @@ if [ "$CONTROLLER" = "install" ]; then
             echo "Installing fresh Magento..."
             install_magento
         fi
-
     fi
 
     # Install WordPress
@@ -467,7 +477,6 @@ if [ "$CONTROLLER" = "install" ]; then
         clear
         echo "Installing WordPress..."
         install_wordpress
-
     fi
 
     # Install Grunt
@@ -490,7 +499,6 @@ if [ "$CONTROLLER" = "install" ]; then
         echo ""
 
     fi
-
 fi
 
 if [ "$CONTROLLER" = "magento" ]; then
@@ -506,5 +514,23 @@ if [ "$CONTROLLER" = "magento" ]; then
                 ;;
         esac
     fi
-
+    
+    if [ "$ACTION" = "load-db" ]; then
+        
+        if [ -f $3 ]; then
+            # Load database from file
+            clean_magento_db
+            mysql -h localhost -u magentouser -ppassword magentodb < $3
+        fi
+        
+    fi
+    
+    if [ "$ACTION" = "set" ]; then
+    
+        case $3 in
+            "admin")
+                mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
+                ;;
+        esac
+    fi
 fi
