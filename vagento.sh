@@ -106,6 +106,7 @@ Global Commands:
   $(green)magento list web-settings$(normalize) Lists all DB configuration
   $(green)magento load-db name.sql$(normalize)  Remove old and reload a new DB
   $(green)magento set admin$(normalize)         Change password for admin to m123123
+  $(green)magento set local-xml$(normalize)     Set local.xml file for sample config
 
 "
 
@@ -530,6 +531,9 @@ if [ "$CONTROLLER" = "magento" ]; then
         case $3 in
             "admin")
                 mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
+                ;;
+            "local-xml")
+                n98-magerun.phar local-config:generate localhost magentouser password magentodb files c49db285e6ff11bb01ee598310b84269
                 ;;
         esac
     fi
