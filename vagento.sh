@@ -102,6 +102,9 @@ Global Commands:
   $(green)install wp$(normalize)                Install fresh WordPress
   $(green)install grunt$(normalize)             Set Grunt tasks for defined theme
 
+  $(green)module clone$(normalize)              Clone magento module
+  $(green)module remove$(normalize)             Remove magento module
+
   $(green)magento list modules$(normalize)      Lists all installed Mageto modules
   $(green)magento list web-settings$(normalize) Lists all DB configuration
   $(green)magento load-db name.sql$(normalize)  Remove old and reload a new DB
@@ -232,7 +235,7 @@ function install_magento {
 }
 
 function clean_magento_db {
-    
+
     # Drop and create DB
     mysql -u root -e "DROP DATABASE magentodb"
     mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
@@ -241,7 +244,7 @@ function clean_magento_db {
 }
 
 function install_magento_defaults {
-    
+
     # Set administrator's new password
     mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
 
@@ -285,7 +288,7 @@ function install_magento_sample {
     mysql -h localhost -u magentouser -ppassword magentodb < magento_sample_data_for_1.6.1.0.sql
 
     install_magento_defaults
-    
+
     # Set new homepage
     CONTENT='{{block type="catalog/product_list_random" category_id="18" template="catalog/product/list.phtml"}}'
     mysql -u root -e "UPDATE magentodb.cms_page SET content='$CONTENT', root_template='one_column' WHERE identifier='home';"
@@ -421,6 +424,59 @@ EOF
     sudo chmod +x /etc/init.d/grunf
 }
 
+function clone_module() {
+    sudo rm -r vagentotemp
+    sudo mkdir vagentotemp
+    sudo git clone "$1" vagentotemp
+}
+
+function deploy_module {
+
+    cd vagentotemp
+
+    if [ ! -f modman ]; then
+        modman create
+    fi
+
+    IFS=$'\r\n'
+    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
+        IFS=$' \t\n'
+        read src dest <<< $line
+
+        if [ -z "$dest" ]; then
+            dest="$src"
+        fi
+
+        echo "-- Deploying $dest"
+        sudo cp -rf $src "../"$dest
+    done
+    cd ../
+
+}
+
+function remove_module() {
+
+    cd vagentotemp
+
+    if [ ! -f modman ]; then
+        modman create
+    fi
+
+    IFS=$'\r\n'
+    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
+        IFS=$' \t\n'
+        read src dest <<< $line
+
+        if [ -z "$dest" ]; then
+            dest="$src"
+        fi
+
+        echo "-- Removing $dest"
+        sudo rm -r $dest
+    done
+    cd ../
+}
+
 #### END OF ALL FUNCTIONS ####
 ##############################
 
@@ -502,6 +558,38 @@ if [ "$CONTROLLER" = "install" ]; then
     fi
 fi
 
+if [ "$CONTROLLER" = "module" ]; then
+    # Clone Module
+    # --------------------
+    if [ "$ACTION" = "clone" ]; then
+
+        clear
+        echo_title "MODULE"
+        echo "-> Cloning repository"
+        clone_module "$3"
+        echo "-> Deploying module"
+        deploy_module
+        sudo rm -r vagentotemp
+        echo "-> Done"
+
+    fi
+
+    # Remove Module
+    # --------------------
+    if [ "$ACTION" = "remove" ]; then
+
+        clear
+        echo_title "MODULE"
+        echo "-> Cloning repository"
+        clone_module "$3"
+        echo "-> Removing module"
+        remove_module
+        sudo rm -r vagentotemp
+        echo "-> Done"
+
+    fi
+fi
+
 if [ "$CONTROLLER" = "magento" ]; then
 
     if [ "$ACTION" = "list" ]; then
@@ -515,19 +603,19 @@ if [ "$CONTROLLER" = "magento" ]; then
                 ;;
         esac
     fi
-    
+
     if [ "$ACTION" = "load-db" ]; then
-        
+
         if [ -f $3 ]; then
             # Load database from file
             clean_magento_db
             mysql -h localhost -u magentouser -ppassword magentodb < $3
         fi
-        
+
     fi
-    
+
     if [ "$ACTION" = "set" ]; then
-    
+
         case $3 in
             "admin")
                 mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
