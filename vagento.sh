@@ -209,7 +209,7 @@ function install_magento {
         rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
     fi
 
-    if [ ! -f $(get_base_dir "/app/etc/local.xml") ]; then
+    if [ ! -f "$BASE_DIR/app/etc/local.xml") ]; then
         php -f /vagrant/install.php -- \
 --license_agreement_accepted "yes" \
 --locale "$LOCALE" \
@@ -517,19 +517,23 @@ if [ "$CONTROLLER" = "install" ]; then
 
         clear
 
-        if [ "$3" == "clean" ]; then
-            echo "Cleaning Magento database..."
-            mysql -u root -e "DROP DATABASE magentodb"
-            rm -rf /vagrant/app/etc/local.xml
-        fi
-
-        if [ "$3" == "sample" ]; then
-            echo "Installing Magento sample data..."
-            install_magento_sample
-        else
-            echo "Installing fresh Magento..."
-            install_magento
-        fi
+        case $3 in
+            "clean")
+                echo "Cleaning Magento database..."
+                mysql -u root -e "DROP DATABASE magentodb"
+                rm -rf $BASE_DIR"/app/etc/local.xml"
+                install_magento
+                ;;
+            "sample")
+                echo "Installing Magento sample data..."
+                install_magento_sample
+                ;;
+            *)
+                echo "Installing fresh Magento..."
+                install_magento
+                ;;
+        esac
+        
     fi
 
     # Install WordPress
