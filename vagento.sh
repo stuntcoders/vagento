@@ -209,7 +209,7 @@ function install_magento {
         rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
     fi
 
-    if [ ! -f "$BASE_DIR/app/etc/local.xml") ]; then
+    if [ ! -f "$BASE_DIR/app/etc/local.xml" ]; then
         php -f /vagrant/install.php -- \
 --license_agreement_accepted "yes" \
 --locale "$LOCALE" \
