@@ -108,7 +108,7 @@ Global Commands:
   $(green)magento list modules$(normalize)       Lists all installed Mageto modules
   $(green)magento list web-settings$(normalize)  Lists all DB configuration
   $(green)magento load-db name.sql$(normalize)   Remove old and reload a new DB
-  $(green)magento export-db name.sql$(normalize) Remove old and reload a new DB
+  $(green)magento export-db name.sql$(normalize) Export DB
   $(green)magento set admin$(normalize)          Change password for admin to m123123
   $(green)magento set local-xml$(normalize)      Set local.xml file for sample config
 
