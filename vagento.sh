@@ -92,24 +92,25 @@ __     __                     _
 
 Global Commands:
   $SCRIPT <command> [<options>]
-----------------------------------------------------------------
-  $(green)help$(normalize)                      List commands with short description
-  $(green)setup$(normalize)                     Set configuration for the project
+-----------------------------------------------------------------
+  $(green)help$(normalize)                       List commands with short description
+  $(green)setup$(normalize)                      Set configuration for the project
 
-  $(green)install magento$(normalize)           Install Magento in working directory
-  $(green)install magento clean$(normalize)     Install Magento on clean database
-  $(green)install magento sample$(normalize)    Load sample data for Magento
-  $(green)install wp$(normalize)                Install fresh WordPress
-  $(green)install grunt$(normalize)             Set Grunt tasks for defined theme
+  $(green)install magento$(normalize)            Install Magento in working directory
+  $(green)install magento clean$(normalize)      Install Magento on clean database
+  $(green)install magento sample$(normalize)     Load sample data for Magento
+  $(green)install wp$(normalize)                 Install fresh WordPress
+  $(green)install grunt$(normalize)              Set Grunt tasks for defined theme
 
-  $(green)module clone$(normalize)              Clone magento module
-  $(green)module remove$(normalize)             Remove magento module
+  $(green)module clone$(normalize)               Clone magento module
+  $(green)module remove$(normalize)              Remove magento module
 
-  $(green)magento list modules$(normalize)      Lists all installed Mageto modules
-  $(green)magento list web-settings$(normalize) Lists all DB configuration
-  $(green)magento load-db name.sql$(normalize)  Remove old and reload a new DB
-  $(green)magento set admin$(normalize)         Change password for admin to m123123
-  $(green)magento set local-xml$(normalize)     Set local.xml file for sample config
+  $(green)magento list modules$(normalize)       Lists all installed Mageto modules
+  $(green)magento list web-settings$(normalize)  Lists all DB configuration
+  $(green)magento load-db name.sql$(normalize)   Remove old and reload a new DB
+  $(green)magento export-db name.sql$(normalize) Remove old and reload a new DB
+  $(green)magento set admin$(normalize)          Change password for admin to m123123
+  $(green)magento set local-xml$(normalize)      Set local.xml file for sample config
 
 "
 
@@ -621,6 +622,12 @@ if [ "$CONTROLLER" = "magento" ]; then
             mysql -h localhost -u magentouser -ppassword magentodb < $3
         fi
 
+    fi
+    
+    if [ "$ACTION" = "export-db" ]; then
+        mysqldump --opt --routines --no-data --skip-triggers  -uroot magentodb > $3
+        mysqldump --opt --no-create-info --skip-triggers  -uroot magentodb >> $3
+        mysqldump --opt --no-create-info --no-data --triggers  -uroot magentodb >> $3
     fi
 
     if [ "$ACTION" = "set" ]; then
