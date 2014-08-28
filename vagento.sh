@@ -448,6 +448,11 @@ function deploy_module {
         fi
 
         echo "-- Deploying $dest"
+        
+        if [ -d "$src" ]; then
+            test -d "../"$dest || mkdir -p "../"$dest
+        fi
+        
         sudo cp -rf $src "../"$dest
     done
     cd ../
