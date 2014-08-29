@@ -406,7 +406,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 case "\$1" in
     start)
-        nohup grunt --base /vagrant/skin/frontend/naturligliv/default --gruntfile /vagrant/skin/frontend/naturligliv/default/Gruntfile.js > /dev/null 2>&1 &
+        nohup grunt --base /vagrant/skin/frontend/$PROJECT/default --gruntfile /vagrant/skin/frontend/$PROJECT/default/Gruntfile.js > /dev/null 2>&1 &
         ;;
     *)
         echo "Usage: $0 {status|start|stop|restart}"
