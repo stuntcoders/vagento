@@ -148,7 +148,7 @@ function setup_configuration {
     echo "Please enter default currency: "
     read CURRENCY
 
-    echo "Please enter default locale (en_EN, de_DE, nb_NO, etc...): "
+    echo "Please enter default locale (en_US, de_DE, nb_NO, etc...): "
     read LOCALE
 
     CONF=$(cat <<EOF
