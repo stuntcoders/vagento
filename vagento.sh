@@ -111,6 +111,7 @@ Global Commands:
   $(green)mage export-db name.sql$(normalize) Export DB
   $(green)mage set admin$(normalize)          Change password for admin to m123123
   $(green)mage set local-xml$(normalize)      Set local.xml file for sample config
+  $(green)mage set htaccess$(normalize)       Set .htaccess
   $(green)mage clear-cache$(normalize)        Clear Magento cache
 
 "
@@ -645,6 +646,10 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
             "local-xml")
                 n98-magerun.phar local-config:generate localhost magentouser password magentodb files admin
+                ;;
+            "htaccess")
+                rm -f .htaccess
+                wget https://raw.githubusercontent.com/magento/magento2/master/.htaccess
                 ;;
         esac
     fi
