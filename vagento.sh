@@ -257,6 +257,7 @@ function install_magento_defaults {
     mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/package/name', '$PROJECT');"
     mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/locale', '$PROJECT');"
     mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/default', '$PROJECT');"
+    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/cookie/cookie_path', '/');"
 
     # Configure basic settings
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='web/unsecure/base_url';"
@@ -449,11 +450,11 @@ function deploy_module {
         fi
 
         echo "-- Deploying $dest"
-        
+
         if [ -d "$src" ]; then
             test -d "../"$dest || mkdir -p "../"$dest
         fi
-        
+
         sudo cp -rf $src "../"$dest
     done
     cd ../
@@ -534,7 +535,7 @@ if [ "$CONTROLLER" = "install" ]; then
                 install_magento
                 ;;
         esac
-        
+
     fi
 
     # Install WordPress
@@ -623,7 +624,7 @@ if [ "$CONTROLLER" = "magento" ]; then
         fi
 
     fi
-    
+
     if [ "$ACTION" = "export-db" ]; then
         mysqldump --opt --routines --no-data --skip-triggers  -uroot magentodb > $3
         mysqldump --opt --no-create-info --skip-triggers  -uroot magentodb >> $3
