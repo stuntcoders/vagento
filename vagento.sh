@@ -111,6 +111,7 @@ Global Commands:
   $(green)magento export-db name.sql$(normalize) Export DB
   $(green)magento set admin$(normalize)          Change password for admin to m123123
   $(green)magento set local-xml$(normalize)      Set local.xml file for sample config
+  $(green)magento clear-cache$(normalize)        Clear Magento cache
 
 "
 
@@ -646,5 +647,9 @@ if [ "$CONTROLLER" = "magento" ]; then
                 n98-magerun.phar local-config:generate localhost magentouser password magentodb files c49db285e6ff11bb01ee598310b84269
                 ;;
         esac
+    fi
+
+    if [ "$ACTION" = "clear-cache" ]; then
+        n98-magerun.phar cache:clean
     fi
 fi
