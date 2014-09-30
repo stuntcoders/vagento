@@ -105,13 +105,13 @@ Global Commands:
   $(green)module clone$(normalize)               Clone magento module
   $(green)module remove$(normalize)              Remove magento module
 
-  $(green)magento list modules$(normalize)       Lists all installed Mageto modules
-  $(green)magento list web-settings$(normalize)  Lists all DB configuration
-  $(green)magento load-db name.sql$(normalize)   Remove old and reload a new DB
-  $(green)magento export-db name.sql$(normalize) Export DB
-  $(green)magento set admin$(normalize)          Change password for admin to m123123
-  $(green)magento set local-xml$(normalize)      Set local.xml file for sample config
-  $(green)magento clear-cache$(normalize)        Clear Magento cache
+  $(green)mage list modules$(normalize)       Lists all installed Mageto modules
+  $(green)mage list web-settings$(normalize)  Lists all DB configuration
+  $(green)mage load-db name.sql$(normalize)   Remove old and reload a new DB
+  $(green)mage export-db name.sql$(normalize) Export DB
+  $(green)mage set admin$(normalize)          Change password for admin to m123123
+  $(green)mage set local-xml$(normalize)      Set local.xml file for sample config
+  $(green)mage clear-cache$(normalize)        Clear Magento cache
 
 "
 
@@ -607,7 +607,7 @@ if [ "$CONTROLLER" = "module" ]; then
     fi
 fi
 
-if [ "$CONTROLLER" = "magento" ]; then
+if [ "$CONTROLLER" = "mage" ]; then
 
     if [ "$ACTION" = "list" ]; then
 
