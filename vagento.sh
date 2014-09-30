@@ -644,7 +644,7 @@ if [ "$CONTROLLER" = "magento" ]; then
                 mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
                 ;;
             "local-xml")
-                n98-magerun.phar local-config:generate localhost magentouser password magentodb files c49db285e6ff11bb01ee598310b84269
+                n98-magerun.phar local-config:generate localhost magentouser password magentodb files admin
                 ;;
         esac
     fi
