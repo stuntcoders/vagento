@@ -233,6 +233,7 @@ function install_magento {
     fi
 
     n98-magerun.phar config:set web/seo/use_rewrites 1
+    install_magento_defaults
 }
 
 function clean_magento_db {
