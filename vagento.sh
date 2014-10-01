@@ -493,14 +493,14 @@ function remove_module() {
 }
 
 function check_for_update() {
-    curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
+    sudo curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
 
-    if ! cmp $SCRIPT "__vagentoupdate.temp"; then
+    if ! cmp $0 "__vagentoupdate.temp"; then
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
     fi
 
-    rm -r __vagentoupdate.temp
+    sudo rm -r __vagentoupdate.temp
 }
 
 function self_update() {
@@ -510,6 +510,7 @@ function self_update() {
     sudo mv ./vagento.sh /usr/local/bin/vagento
 
     echo "Vagento updated to latest version"
+    exit 0;
 }
 
 #### END OF ALL FUNCTIONS ####
