@@ -493,15 +493,14 @@ function remove_module() {
 }
 
 function check_for_update() {
-    SUM_SELF=$(md5sum $SCRIPT | awk '{print $1}')
     curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
-    SUM_LATEST=$(md5sum __vagentoupdate.temp | awk '{print $1}')
-    rm -r __vagentoupdate.temp
 
-    if [[ "$SUM_LATEST" != "$SUM_SELF" ]]; then
+    if ! cmp $SCRIPT "__vagentoupdate.temp"; then
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
     fi
+
+    rm -r __vagentoupdate.temp
 }
 
 function self_update() {
