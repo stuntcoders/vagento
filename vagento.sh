@@ -95,6 +95,7 @@ Global Commands:
 -----------------------------------------------------------------
   $(green)help$(normalize)                       List commands with short description
   $(green)setup$(normalize)                      Set configuration for the project
+  $(green)update$(normalize)                     Updates Vagento to latest version
 
   $(green)install magento$(normalize)            Install Magento in working directory
   $(green)install magento clean$(normalize)      Install Magento on clean database
@@ -491,16 +492,36 @@ function remove_module() {
     cd ../
 }
 
+function check_for_update() {
+    SUM_SELF=$(md5sum $SCRIPT | awk '{print $1}')
+    curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
+    SUM_LATEST=$(md5sum __vagentoupdate.temp | awk '{print $1}')
+    rm -r __vagentoupdate.temp
+
+    if [[ "$SUM_LATEST" != "$SUM_SELF" ]]; then
+        echo "$(red)New Vagento version available$(normalize)"
+        echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
+    fi
+}
+
+function self_update() {
+    sudo rm -f vagento.sh /usr/local/bin/vagento
+    wget https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh
+    sudo chmod +x ./vagento.sh
+    sudo mv ./vagento.sh /usr/local/bin/vagento
+
+    echo "Vagento updated to latest version"
+}
+
 #### END OF ALL FUNCTIONS ####
 ##############################
-
 
 
 #### PROCESS THE REQUEST ####
 
 if [ "$CONTROLLER" = "--help" -o "$CONTROLLER" = "" -o "$CONTROLLER" = "help" ]; then
 
-    clear; echo -e "$USAGE"; exit 0
+    clear; echo -e "$USAGE";
 
 fi
 
@@ -511,6 +532,11 @@ if [ "$CONTROLLER" = "setup" ]; then
     else
         quick_setup_configuration $2 $3 $4 $5 $6 $7
     fi
+
+fi
+
+if [ "$CONTROLLER" = "update" ]; then
+    self_update
 
 fi
 
@@ -658,3 +684,6 @@ if [ "$CONTROLLER" = "mage" ]; then
         n98-magerun.phar cache:clean
     fi
 fi
+
+check_for_update
+
