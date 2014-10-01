@@ -96,6 +96,7 @@ Global Commands:
   $(green)help$(normalize)                       List commands with short description
   $(green)setup$(normalize)                      Set configuration for the project
   $(green)update$(normalize)                     Updates Vagento to latest version
+  $(green)version-check$(normalize)              Check if latest version is used
 
   $(green)install magento$(normalize)            Install Magento in working directory
   $(green)install magento clean$(normalize)      Install Magento on clean database
@@ -493,11 +494,13 @@ function remove_module() {
 }
 
 function check_for_update() {
-    sudo curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
+    curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
 
-    if ! cmp $0 "__vagentoupdate.temp"; then
+    if ! cmp $0 "__vagentoupdate.temp" > /dev/null; then
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
+    else
+        echo "You have latest version of vagento"
     fi
 
     sudo rm -r __vagentoupdate.temp
@@ -536,7 +539,14 @@ if [ "$CONTROLLER" = "setup" ]; then
 fi
 
 if [ "$CONTROLLER" = "update" ]; then
+
     self_update
+
+fi
+
+if [ "$CONTROLLER" = "version-check" ]; then
+
+    check_for_update
 
 fi
 
@@ -684,6 +694,3 @@ if [ "$CONTROLLER" = "mage" ]; then
         n98-magerun.phar cache:clean
     fi
 fi
-
-check_for_update
-
