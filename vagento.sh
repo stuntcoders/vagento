@@ -512,7 +512,7 @@ function self_update() {
     sudo chmod +x ./vagento.sh
     sudo mv ./vagento.sh /usr/local/bin/vagento
 
-    echo "Vagento updated to latest version"
+    echo "$(red)Vagento updated to latest version(normalize)"
     exit 0;
 }
 
