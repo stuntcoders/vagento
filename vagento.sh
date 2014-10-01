@@ -258,21 +258,21 @@ function install_magento_defaults {
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='design/theme/locale';"
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='design/theme/default';"
 
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/package/name', '$PROJECT');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/locale', '$PROJECT');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/default', '$PROJECT');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/cookie/cookie_path', '/');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/package/name', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/locale', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/default', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/cookie/cookie_path', '/');"
 
     # Configure basic settings
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='web/unsecure/base_url';"
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='web/secure/base_url';"
 
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/unsecure/base_url', 'http://$DOMAIN/');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', 'http://$DOMAIN/');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/unsecure/base_url', 'http://$DOMAIN/');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', 'http://$DOMAIN/');"
 
     # Remove suffix from products and categories
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/product_url_suffix', '');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/category_url_suffix', '');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/product_url_suffix', '');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/category_url_suffix', '');"
 
     # Set all notifications as read
     mysql -u root -e "UPDATE magentodb.adminnotification_inbox SET is_read=1 WHERE 1=1;"
