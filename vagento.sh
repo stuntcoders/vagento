@@ -324,7 +324,7 @@ function install_wordpress {
         cd "$BASE_DIR/$SITE_FOLDER/"
         wp core download
         wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
-define('WP_DEBUG', true);
+define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', true);
 PHP
        wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
@@ -496,7 +496,7 @@ function remove_module() {
 function check_for_update() {
     curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
 
-    if ! cmp $0 "__vagentoupdate.temp" > /dev/null; then
+    if [ ! cmp $0 "__vagentoupdate.temp" > /dev/null ]; then
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
     else

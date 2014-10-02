@@ -1,13 +1,21 @@
+# Editor configuration normalization
+# @see http://editorconfig.org/
+
+# Top-most editorconfig file
 root = true
 
-# All files
 [*]
 indent_style = space
+indent_size = 4
 end_of_line = lf
 charset = utf-8
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{php,phtml,scss,js}]
-indent_style = space
-indent_size = 4
+# CSS & JavaScript files
+[*.{css,scss,js}]
+indent_style = tab
+
+# WordPress
+[side/**.{css,scss,js,php}]
+indent_style = tab
