@@ -231,7 +231,7 @@ function install_magento {
 }
 
 function clean_magento_db {
-    
+
     # Drop and create DB
     mysql -u root -e "DROP DATABASE magentodb"
     mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
@@ -240,7 +240,7 @@ function clean_magento_db {
 }
 
 function install_magento_defaults {
-    
+
     # Set administrator's new password
     mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
 
@@ -284,7 +284,7 @@ function install_magento_sample {
     mysql -h localhost -u magentouser -ppassword magentodb < magento_sample_data_for_1.6.1.0.sql
 
     install_magento_defaults
-    
+
     # Set new homepage
     CONTENT='{{block type="catalog/product_list_random" category_id="18" template="catalog/product/list.phtml"}}'
     mysql -u root -e "UPDATE magentodb.cms_page SET content='$CONTENT', root_template='one_column' WHERE identifier='home';"
@@ -309,7 +309,7 @@ function install_wordpress {
         cd "$BASE_DIR/$SITE_FOLDER/"
         wp core download
         wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
-define('WP_DEBUG', true);
+define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', true);
 PHP
        wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
@@ -514,19 +514,19 @@ if [ "$CONTROLLER" = "magento" ]; then
                 ;;
         esac
     fi
-    
+
     if [ "$ACTION" = "load-db" ]; then
-        
+
         if [ -f $3 ]; then
             # Load database from file
             clean_magento_db
             mysql -h localhost -u magentouser -ppassword magentodb < $3
         fi
-        
+
     fi
-    
+
     if [ "$ACTION" = "set" ]; then
-    
+
         case $3 in
             "admin")
                 mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
