@@ -92,20 +92,29 @@ __     __                     _
 
 Global Commands:
   $SCRIPT <command> [<options>]
-----------------------------------------------------------------
-  $(green)help$(normalize)                      List commands with short description
-  $(green)setup$(normalize)                     Set configuration for the project
+-----------------------------------------------------------------
+  $(green)help$(normalize)                       List commands with short description
+  $(green)setup$(normalize)                      Set configuration for the project
+  $(green)update$(normalize)                     Updates Vagento to latest version
+  $(green)version-check$(normalize)              Check if latest version is used
 
-  $(green)install magento$(normalize)           Install Magento in working directory
-  $(green)install magento clean$(normalize)     Install Magento on clean database
-  $(green)install magento sample$(normalize)    Load sample data for Magento
-  $(green)install wp$(normalize)                Install fresh WordPress
-  $(green)install grunt$(normalize)             Set Grunt tasks for defined theme
+  $(green)install magento$(normalize)            Install Magento in working directory
+  $(green)install magento clean$(normalize)      Install Magento on clean database
+  $(green)install magento sample$(normalize)     Load sample data for Magento
+  $(green)install wp$(normalize)                 Install fresh WordPress
+  $(green)install grunt$(normalize)              Set Grunt tasks for defined theme
 
-  $(green)magento list modules$(normalize)      Lists all installed Mageto modules
-  $(green)magento list web-settings$(normalize) Lists all DB configuration
-  $(green)magento load-db name.sql$(normalize)  Remove old and reload a new DB
-  $(green)magento set admin$(normalize)         Change password for admin to m123123
+  $(green)module clone$(normalize)               Clone magento module
+  $(green)module remove$(normalize)              Remove magento module
+
+  $(green)mage list modules$(normalize)          Lists all installed Mageto modules
+  $(green)mage list web-settings$(normalize)     Lists all DB configuration
+  $(green)mage load-db name.sql$(normalize)      Remove old and reload a new DB
+  $(green)mage export-db name.sql$(normalize)    Export DB
+  $(green)mage set admin$(normalize)             Change password for admin to m123123
+  $(green)mage set local-xml$(normalize)         Set local.xml file for sample config
+  $(green)mage set htaccess$(normalize)          Set .htaccess
+  $(green)mage clear-cache$(normalize)           Clear Magento cache
 
 "
 
@@ -143,7 +152,7 @@ function setup_configuration {
     echo "Please enter default currency: "
     read CURRENCY
 
-    echo "Please enter default locale (en_EN, de_DE, nb_NO, etc...): "
+    echo "Please enter default locale (en_US, de_DE, nb_NO, etc...): "
     read LOCALE
 
     CONF=$(cat <<EOF
@@ -205,7 +214,7 @@ function install_magento {
         rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
     fi
 
-    if [ ! -f $(get_base_dir "/app/etc/local.xml") ]; then
+    if [ ! -f "$BASE_DIR/app/etc/local.xml" ]; then
         php -f /vagrant/install.php -- \
 --license_agreement_accepted "yes" \
 --locale "$LOCALE" \
@@ -228,6 +237,7 @@ function install_magento {
     fi
 
     n98-magerun.phar config:set web/seo/use_rewrites 1
+    install_magento_defaults
 }
 
 function clean_magento_db {
@@ -249,16 +259,21 @@ function install_magento_defaults {
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='design/theme/locale';"
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='design/theme/default';"
 
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/package/name', '$PROJECT');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/locale', '$PROJECT');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/default', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/package/name', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/locale', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/default', '$PROJECT');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/cookie/cookie_path', '/');"
 
     # Configure basic settings
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='web/unsecure/base_url';"
     mysql -u root -e "DELETE FROM magentodb.core_config_data WHERE path='web/secure/base_url';"
 
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/unsecure/base_url', 'http://$DOMAIN/');"
-    mysql -u root -e "INSERT INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', 'http://$DOMAIN/');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/unsecure/base_url', 'http://$DOMAIN/');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', 'http://$DOMAIN/');"
+
+    # Remove suffix from products and categories
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/product_url_suffix', '');"
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'catalog/seo/category_url_suffix', '');"
 
     # Set all notifications as read
     mysql -u root -e "UPDATE magentodb.adminnotification_inbox SET is_read=1 WHERE 1=1;"
@@ -401,7 +416,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 case "\$1" in
     start)
-        nohup grunt --base /vagrant/skin/frontend/naturligliv/default --gruntfile /vagrant/skin/frontend/naturligliv/default/Gruntfile.js > /dev/null 2>&1 &
+        nohup grunt --base /vagrant/skin/frontend/$PROJECT/default --gruntfile /vagrant/skin/frontend/$PROJECT/default/Gruntfile.js > /dev/null 2>&1 &
         ;;
     *)
         echo "Usage: $0 {status|start|stop|restart}"
@@ -420,16 +435,96 @@ EOF
     sudo chmod +x /etc/init.d/grunf
 }
 
+function clone_module() {
+    sudo rm -r vagentotemp
+    sudo mkdir vagentotemp
+    sudo git clone "$1" vagentotemp
+}
+
+function deploy_module {
+
+    cd vagentotemp
+
+    if [ ! -f modman ]; then
+        modman create
+    fi
+
+    IFS=$'\r\n'
+    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
+        IFS=$' \t\n'
+        read src dest <<< $line
+
+        if [ -z "$dest" ]; then
+            dest="$src"
+        fi
+
+        echo "-- Deploying $dest"
+
+        if [ -d "$src" ]; then
+            test -d "../"$dest || mkdir -p "../"$dest
+        fi
+
+        sudo cp -rf $src "../"$dest
+    done
+    cd ../
+
+}
+
+function remove_module() {
+
+    cd vagentotemp
+
+    if [ ! -f modman ]; then
+        modman create
+    fi
+
+    IFS=$'\r\n'
+    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
+        IFS=$' \t\n'
+        read src dest <<< $line
+
+        if [ -z "$dest" ]; then
+            dest="$src"
+        fi
+
+        echo "-- Removing $dest"
+        sudo rm -r $dest
+    done
+    cd ../
+}
+
+function check_for_update() {
+    curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
+
+    if [ ! cmp $0 "__vagentoupdate.temp" > /dev/null ]; then
+        echo "$(red)New Vagento version available$(normalize)"
+        echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
+    else
+        echo "You have latest version of vagento"
+    fi
+
+    sudo rm -r __vagentoupdate.temp
+}
+
+function self_update() {
+    sudo rm -f vagento.sh /usr/local/bin/vagento
+    wget https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh
+    sudo chmod +x ./vagento.sh
+    sudo mv ./vagento.sh /usr/local/bin/vagento
+
+    echo "$(red)Vagento updated to latest version$(normalize)"
+    exit 0;
+}
+
 #### END OF ALL FUNCTIONS ####
 ##############################
-
 
 
 #### PROCESS THE REQUEST ####
 
 if [ "$CONTROLLER" = "--help" -o "$CONTROLLER" = "" -o "$CONTROLLER" = "help" ]; then
 
-    clear; echo -e "$USAGE"; exit 0
+    clear; echo -e "$USAGE";
 
 fi
 
@@ -440,6 +535,18 @@ if [ "$CONTROLLER" = "setup" ]; then
     else
         quick_setup_configuration $2 $3 $4 $5 $6 $7
     fi
+
+fi
+
+if [ "$CONTROLLER" = "update" ]; then
+
+    self_update
+
+fi
+
+if [ "$CONTROLLER" = "version-check" ]; then
+
+    check_for_update
 
 fi
 
@@ -455,19 +562,23 @@ if [ "$CONTROLLER" = "install" ]; then
 
         clear
 
-        if [ "$3" == "clean" ]; then
-            echo "Cleaning Magento database..."
-            mysql -u root -e "DROP DATABASE magentodb"
-            rm -rf /vagrant/app/etc/local.xml
-        fi
+        case $3 in
+            "clean")
+                echo "Cleaning Magento database..."
+                mysql -u root -e "DROP DATABASE magentodb"
+                rm -rf $BASE_DIR"/app/etc/local.xml"
+                install_magento
+                ;;
+            "sample")
+                echo "Installing Magento sample data..."
+                install_magento_sample
+                ;;
+            *)
+                echo "Installing fresh Magento..."
+                install_magento
+                ;;
+        esac
 
-        if [ "$3" == "sample" ]; then
-            echo "Installing Magento sample data..."
-            install_magento_sample
-        else
-            echo "Installing fresh Magento..."
-            install_magento
-        fi
     fi
 
     # Install WordPress
@@ -501,7 +612,39 @@ if [ "$CONTROLLER" = "install" ]; then
     fi
 fi
 
-if [ "$CONTROLLER" = "magento" ]; then
+if [ "$CONTROLLER" = "module" ]; then
+    # Clone Module
+    # --------------------
+    if [ "$ACTION" = "clone" ]; then
+
+        clear
+        echo_title "MODULE"
+        echo "-> Cloning repository"
+        clone_module "$3"
+        echo "-> Deploying module"
+        deploy_module
+        sudo rm -r vagentotemp
+        echo "-> Done"
+
+    fi
+
+    # Remove Module
+    # --------------------
+    if [ "$ACTION" = "remove" ]; then
+
+        clear
+        echo_title "MODULE"
+        echo "-> Cloning repository"
+        clone_module "$3"
+        echo "-> Removing module"
+        remove_module
+        sudo rm -r vagentotemp
+        echo "-> Done"
+
+    fi
+fi
+
+if [ "$CONTROLLER" = "mage" ]; then
 
     if [ "$ACTION" = "list" ]; then
 
@@ -525,12 +668,29 @@ if [ "$CONTROLLER" = "magento" ]; then
 
     fi
 
+    if [ "$ACTION" = "export-db" ]; then
+        mysqldump --opt --routines --no-data --skip-triggers  -uroot magentodb > $3
+        mysqldump --opt --no-create-info --skip-triggers  -uroot magentodb >> $3
+        mysqldump --opt --no-create-info --no-data --triggers  -uroot magentodb >> $3
+    fi
+
     if [ "$ACTION" = "set" ]; then
 
         case $3 in
             "admin")
                 mysql -u root -e "UPDATE magentodb.admin_user SET password=CONCAT(MD5('qXm123123'), ':qX') WHERE username='admin';"
                 ;;
+            "local-xml")
+                n98-magerun.phar local-config:generate localhost magentouser password magentodb files admin
+                ;;
+            "htaccess")
+                rm -f .htaccess
+                wget https://raw.githubusercontent.com/magento/magento2/master/.htaccess
+                ;;
         esac
+    fi
+
+    if [ "$ACTION" = "clear-cache" ]; then
+        n98-magerun.phar cache:clean
     fi
 fi

@@ -5,7 +5,7 @@ DOMAIN=""
 IP="192.168.33.11"
 HOSTS="y"
 CURRENCY="NOK"
-LOCALE="en_EN"
+LOCALE="en_US"
 SITE_FOLDER="side"
 EMAIL="hello@stuntcoders.com"
 
