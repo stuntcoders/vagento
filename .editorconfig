@@ -17,5 +17,5 @@ trim_trailing_whitespace = true
 indent_style = tab
 
 # WordPress
-[side/**.{css,scss,js,php}]
+[{side,seite,blog,blogg,site,sajt}/**.php]
 indent_style = tab
