@@ -327,7 +327,10 @@ function install_wordpress {
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 PHP
-       wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+        wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+
+        # Add wp admin path (Needed for Stuntcoders_Wpadmin module)
+        mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'wpadmin/wpadmin_options/path', '$SITE_FOLDER');"
     fi
 }
 
