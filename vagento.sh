@@ -331,6 +331,16 @@ PHP
 
         # Add wp admin path (Needed for Stuntcoders_Wpadmin module)
         mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'wpadmin/wpadmin_options/path', '$SITE_FOLDER');"
+
+        # Replace functions.php
+        if [ ! -d "$BASE_DIR/app/code/local/Mage/Core" ]; then
+            mkdir -p "$BASE_DIR/app/code/local/Mage/Core"
+        fi
+
+        cd "$BASE_DIR/app/code/local/Mage/Core"
+        wget -q http://vagento.stuntcoders.com/functions.php -O functions.php
+
+        cd $BASE_DIR
     fi
 }
 
