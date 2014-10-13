@@ -102,7 +102,15 @@ Global Commands:
   $(green)install magento clean$(normalize)      Install Magento on clean database
   $(green)install magento sample$(normalize)     Load sample data for Magento
   $(green)install wp$(normalize)                 Install fresh WordPress
+  $(green)install wp clean-db$(normalize)        Install WordPress clean database
   $(green)install grunt$(normalize)              Set Grunt tasks for defined theme
+
+  $(green)wp list plugins$(normalize)            Lists all installed WP plugins
+  $(green)wp list users$(normalize)              Lists all WP users
+  $(green)wp load-db name.sql$(normalize)        Remove old and reload new DB
+  $(green)wp export-db name.sql$(normalize)      Export DB
+  $(green)wp set wp-config$(normalize)           Set default wp-config
+  $(green)wp set admin$(normalize)               Set default user to admin/m123123
 
   $(green)module clone$(normalize)               Clone magento module
   $(green)module remove$(normalize)              Remove magento module
@@ -305,6 +313,36 @@ function install_magento_sample {
     mysql -u root -e "UPDATE magentodb.cms_page SET content='$CONTENT', root_template='one_column' WHERE identifier='home';"
 }
 
+function set_wordpress_config {
+
+    cd "$BASE_DIR/$SITE_FOLDER"
+
+    wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
+define('WP_DEBUG', false);
+define('WP_DEBUG_LOG', true);
+PHP
+}
+
+function install_wordpress_clean_db {
+
+    cd $BASE_DIR
+
+    mysql -u root -e "DROP DATABASE IF EXISTS wpdb"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wpdb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "FLUSH PRIVILEGES"
+
+    cd "$BASE_DIR/$SITE_FOLDER"
+    set_wordpress_config
+    wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+}
+
+function wp_admin_path_mage_install {
+
+    # Add wp admin path (Needed for Stuntcoders_Wpadmin module)
+    mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'wpadmin/wpadmin_options/path', '$SITE_FOLDER');"
+}
+
 function install_wordpress {
 
     cd $BASE_DIR
@@ -323,14 +361,9 @@ function install_wordpress {
 
         cd "$BASE_DIR/$SITE_FOLDER/"
         wp core download
-        wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
-define('WP_DEBUG', false);
-define('WP_DEBUG_LOG', true);
-PHP
-        wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+        install_wordpress_clean_db
 
-        # Add wp admin path (Needed for Stuntcoders_Wpadmin module)
-        mysql -u root -e "REPLACE INTO magentodb.core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'wpadmin/wpadmin_options/path', '$SITE_FOLDER');"
+        wp_admin_path_mage_install
 
         # Replace functions.php
         if [ ! -d "$BASE_DIR/app/code/local/Mage/Core" ]; then
@@ -599,8 +632,16 @@ if [ "$CONTROLLER" = "install" ]; then
     if [ "$ACTION" = "wordpress" -o "$ACTION" = "wp" ]; then
 
         clear
-        echo "Installing WordPress..."
-        install_wordpress
+        case $3 in
+            "clean-db")
+                echo "Installing clean WordPress database..."
+                install_wordpress_clean_db
+                ;;
+            *)
+                echo "Installing WordPress..."
+                install_wordpress
+                ;;
+        esac
     fi
 
     # Install Grunt
@@ -654,6 +695,46 @@ if [ "$CONTROLLER" = "module" ]; then
         sudo rm -r vagentotemp
         echo "-> Done"
 
+    fi
+fi
+
+if [ "$CONTROLLER" = "wp" ]; then
+
+    if [ "$ACTION" = "list" ]; then
+
+        case $3 in
+            "plugins")
+                wp plugin list --path="$BASE_DIR/$SITE_FOLDER"
+                ;;
+            "users")
+                wp user list --path="$BASE_DIR/$SITE_FOLDER"
+                ;;
+        esac
+    fi
+
+    if [ "$ACTION" = "load-db" ]; then
+
+        if [ -f $3 ]; then
+            # Load database from file
+            wp db import $3 --path="$BASE_DIR/$SITE_FOLDER"
+        fi
+
+    fi
+
+    if [ "$ACTION" = "export-db" ]; then
+        wp db export $3 --path="$BASE_DIR/$SITE_FOLDER"
+    fi
+
+    if [ "$ACTION" = "set" ]; then
+
+        case $3 in
+            "admin")
+                mysql -u root -e "UPDATE wpdb.`wp_users` SET `user_pass` = MD5('m123123') WHERE `wp_users`.`user_login` = "admin";;"
+                ;;
+            "wp-config")
+                set_wordpress_config
+                ;;
+        esac
     fi
 fi
 
