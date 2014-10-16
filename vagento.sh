@@ -338,6 +338,16 @@ function install_wordpress_clean_db {
     cd "$BASE_DIR/$SITE_FOLDER"
     set_wordpress_config
     wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
+    
+    # Delete base plugins
+    wp plugin delete hello
+    wp plugin delete hello-dolly
+    wp plugin delete akismet
+    
+    # Cleanup
+    wp post delete 1
+    wp rewrite structure &amp;quot;/%postname%/&amp;quot;
+    wp rewrite flush
 }
 
 function wp_admin_path_mage_install {
