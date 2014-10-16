@@ -92,39 +92,40 @@ __     __                     _
 
 Global Commands:
   $SCRIPT <command> [<options>]
------------------------------------------------------------------
-  $(green)help$(normalize)                       List commands with short description
-  $(green)setup$(normalize)                      Set configuration for the project
-  $(green)update$(normalize)                     Updates Vagento to latest version
-  $(green)version-check$(normalize)              Check if latest version is used
+--------------------------------------------------------------------------
+  $(green)help$(normalize)                                List commands with short description
+  $(green)setup$(normalize)                               Set configuration for the project
+  $(green)update$(normalize)                              Updates Vagento to latest version
+  $(green)version-check$(normalize)                       Check if latest version is used
 
-  $(green)install magento$(normalize)            Install Magento in working directory
-  $(green)install magento clean$(normalize)      Install Magento on clean database
-  $(green)install magento sample$(normalize)     Load sample data for Magento
-  $(green)install wp$(normalize)                 Install fresh WordPress
-  $(green)install wp clean-db$(normalize)        Install WordPress clean database
-  $(green)install grunt$(normalize)              Set Grunt tasks for defined theme
+  $(green)install magento$(normalize)                     Install Magento in working directory
+  $(green)install magento clean$(normalize)               Install Magento on clean database
+  $(green)install magento sample$(normalize)              Load sample data for Magento
+  $(green)install wp$(normalize)                          Install fresh WordPress
+  $(green)install wp clean-db$(normalize)                 Install WordPress clean database
+  $(green)install grunt$(normalize)                       Set Grunt tasks for defined theme
 
-  $(green)wp list plugins$(normalize)            Lists all installed WP plugins
-  $(green)wp list users$(normalize)              Lists all WP users
-  $(green)wp update$(normalize)                  Update WordPress
-  $(green)wp db-chdomain old.com new$(normalize) Replace old domain name with new one
-  $(green)wp load-db name.sql$(normalize)        Remove old and reload new DB
-  $(green)wp export-db name.sql$(normalize)      Export DB
-  $(green)wp set wp-config$(normalize)           Set default wp-config
-  $(green)wp set admin$(normalize)               Set default user to admin/m123123
+  $(green)wp list plugins$(normalize)                     Lists all installed WP plugins
+  $(green)wp list users$(normalize)                       Lists all WP users
+  $(green)wp update$(normalize)                           Update WordPress
+  $(green)wp db-chdomain old.com new$(normalize)          Replace old domain name with new one
+  $(green)wp db-load name.sql$(normalize)                 Remove old and reload new DB
+  $(green)wp db-export name.sql$(normalize)               Export DB
+  $(green)wp set wp-config$(normalize)                    Set default wp-config
+  $(green)wp set admin$(normalize)                        Set default user to admin/m123123
 
-  $(green)module clone$(normalize)               Clone magento module
-  $(green)module remove$(normalize)              Remove magento module
+  $(green)module clone$(normalize)                        Clone magento module
+  $(green)module remove$(normalize)                       Remove magento module
 
-  $(green)mage list modules$(normalize)          Lists all installed Mageto modules
-  $(green)mage list web-settings$(normalize)     Lists all DB configuration
-  $(green)mage load-db name.sql$(normalize)      Remove old and reload a new DB
-  $(green)mage export-db name.sql$(normalize)    Export DB
-  $(green)mage set admin$(normalize)             Change password for admin to m123123
-  $(green)mage set local-xml$(normalize)         Set local.xml file for sample config
-  $(green)mage set htaccess$(normalize)          Set .htaccess
-  $(green)mage clear-cache$(normalize)           Clear Magento cache
+  $(green)mage list modules$(normalize)                   Lists all installed Mageto modules
+  $(green)mage list web-settings$(normalize)              Lists all DB configuration
+  $(green)mage db-chdomain name.sql old new$(normalize)   Replace old domain with new in file
+  $(green)mage db-load name.sql$(normalize)               Remove old and reload a new DB
+  $(green)mage db-export name.sql$(normalize)             Export DB
+  $(green)mage set admin$(normalize)                      Change password for admin to m123123
+  $(green)mage set local-xml$(normalize)                  Set local.xml file for sample config
+  $(green)mage set htaccess$(normalize)                   Set .htaccess
+  $(green)mage clear-cache$(normalize)                    Clear Magento cache
 
 "
 
@@ -728,7 +729,7 @@ if [ "$CONTROLLER" = "wp" ]; then
         
     fi
 
-    if [ "$ACTION" = "load-db" ]; then
+    if [ "$ACTION" = "db-load" ]; then
 
         if [ -f $3 ]; then
             # Load database from file
@@ -737,7 +738,7 @@ if [ "$CONTROLLER" = "wp" ]; then
 
     fi
 
-    if [ "$ACTION" = "export-db" ]; then
+    if [ "$ACTION" = "db-export" ]; then
         wp db export $3 --path="$BASE_DIR/$SITE_FOLDER"
     fi
 
@@ -767,8 +768,14 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
         esac
     fi
+    
+    if [ "$ACTION" = "db-chdomain" ]; then
+    
+        ruby -pi -e "gsub(/$4/, '$5')" $3
+        
+    fi
 
-    if [ "$ACTION" = "load-db" ]; then
+    if [ "$ACTION" = "db-load" ]; then
 
         if [ -f $3 ]; then
             # Load database from file
@@ -778,7 +785,7 @@ if [ "$CONTROLLER" = "mage" ]; then
 
     fi
 
-    if [ "$ACTION" = "export-db" ]; then
+    if [ "$ACTION" = "db-export" ]; then
         mysqldump --opt --routines --no-data --skip-triggers  -uroot magentodb > $3
         mysqldump --opt --no-create-info --skip-triggers  -uroot magentodb >> $3
         mysqldump --opt --no-create-info --no-data --triggers  -uroot magentodb >> $3
