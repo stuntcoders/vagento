@@ -107,6 +107,8 @@ Global Commands:
 
   $(green)wp list plugins$(normalize)            Lists all installed WP plugins
   $(green)wp list users$(normalize)              Lists all WP users
+  $(green)wp update$(normalize)                  Update WordPress
+  $(green)wp db-chdomain old.com new$(normalize) Replace old domain name with new one
   $(green)wp load-db name.sql$(normalize)        Remove old and reload new DB
   $(green)wp export-db name.sql$(normalize)      Export DB
   $(green)wp set wp-config$(normalize)           Set default wp-config
@@ -710,6 +712,20 @@ if [ "$CONTROLLER" = "wp" ]; then
                 wp user list --path="$BASE_DIR/$SITE_FOLDER"
                 ;;
         esac
+    fi
+
+    if [ "$ACTION" = "update" ]; then
+
+        wp core update --path="$BASE_DIR/$SITE_FOLDER"
+        wp plugin update --all --path="$BASE_DIR/$SITE_FOLDER"
+        wp theme update --all --path="$BASE_DIR/$SITE_FOLDER"
+
+    fi
+    
+    if [ "$ACTION" = "db-chdomain" ]; then
+    
+        wp search-replace $3 $4
+        
     fi
 
     if [ "$ACTION" = "load-db" ]; then
