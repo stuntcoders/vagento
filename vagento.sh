@@ -326,6 +326,15 @@ define('WP_DEBUG_LOG', true);
 PHP
 }
 
+function install_wordpress_base_plugins {
+    wp plugin install wordpress-importer --activate
+    wp plugin install theme-check --activate
+    wp plugin install advanced-custom-fields --activate
+    wp plugin install custom-post-type-ui --activate
+    wp plugin install wordpress-seo --activate
+    wp plugin install google-analytics-for-wordpress --activate
+}
+
 function install_wordpress_clean_db {
 
     cd $BASE_DIR
@@ -344,9 +353,13 @@ function install_wordpress_clean_db {
     wp plugin delete hello-dolly
     wp plugin delete akismet
     
+    # Install plugins
+    install_wordpress_base_plugins
+    
     # Cleanup
     wp post delete 1
-    wp rewrite structure &amp;quot;/%postname%/&amp;quot;
+    wp comment delete 1
+    wp rewrite structure "/%postname%/"
     wp rewrite flush
 }
 
