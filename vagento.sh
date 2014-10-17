@@ -357,6 +357,7 @@ function install_wordpress_clean_db {
     install_wordpress_base_plugins
     
     # Cleanup
+    wp widget delete search-2
     wp post delete 1
     wp comment delete 1
     wp rewrite structure "/%postname%/"
