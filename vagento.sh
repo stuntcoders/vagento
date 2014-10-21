@@ -333,6 +333,8 @@ function install_wordpress_base_plugins {
     wp plugin install custom-post-type-ui --activate
     wp plugin install wordpress-seo --activate
     wp plugin install google-analytics-for-wordpress --activate
+    wp plugin install wp-pagenavi --activate
+    wp plugin install wp-native-dashboard --activate
 }
 
 function install_wordpress_clean_db {
