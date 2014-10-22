@@ -242,7 +242,7 @@ function install_magento {
 --use_secure_admin "no" \
 --admin_firstname "Dejan" \
 --admin_lastname "Jacimovic" \
---admin_email "dejan.jacimovic@gmail.com" \
+--admin_email "dejan@stuntcoders.com" \
 --admin_username "admin" \
 --admin_password "m123123"
     fi
