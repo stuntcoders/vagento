@@ -25,9 +25,9 @@ apt-get install -y vim git curl wget
 
 # Install nodejs (with npm), and then grunt and yeoman
 # --------------------
-apt-get remove nodejs
-apt-get install python-software-properties
-apt-add-repository ppa:chris-lea/node.js
+apt-get remove -y nodejs
+apt-get install -y python-software-properties
+apt-add-repository -y ppa:chris-lea/node.js
 apt-get update
 apt-get install -y nodejs
 
