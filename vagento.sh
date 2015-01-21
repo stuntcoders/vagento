@@ -115,8 +115,6 @@ Global Commands:
   $(green)wp set admin$(normalize)                        Set default user to admin/m123123
 
   $(green)module clone$(normalize)                        Clone magento module
-  $(green)module remove$(normalize)                       Remove magento module
-
   $(green)mage list modules$(normalize)                   Lists all installed Mageto modules
   $(green)mage list web-settings$(normalize)              Lists all DB configuration
   $(green)mage db-chdomain name.sql old new$(normalize)   Replace old domain with new in file
@@ -525,29 +523,6 @@ function deploy_module {
     cd ../
 }
 
-function remove_module() {
-
-    cd vagentotemp
-
-    if [ ! -f modman ]; then
-        modman create
-    fi
-
-    IFS=$'\r\n'
-    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
-        IFS=$' \t\n'
-        read src dest <<< $line
-
-        if [ -z "$dest" ]; then
-            dest="$src"
-        fi
-
-        echo "-- Removing $dest"
-        sudo rm -r $dest
-    done
-    cd ../
-}
-
 function check_for_update() {
     curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
 
@@ -686,21 +661,6 @@ if [ "$CONTROLLER" = "module" ]; then
         clone_module "$3"
         echo "-> Deploying module"
         deploy_module
-        sudo rm -r vagentotemp
-        echo "-> Done"
-
-    fi
-
-    # Remove Module
-    # --------------------
-    if [ "$ACTION" = "remove" ]; then
-
-        clear
-        echo_title "MODULE"
-        echo "-> Cloning repository"
-        clone_module "$3"
-        echo "-> Removing module"
-        remove_module
         sudo rm -r vagentotemp
         echo "-> Done"
 
