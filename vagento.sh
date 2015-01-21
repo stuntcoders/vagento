@@ -349,15 +349,15 @@ function install_wordpress_clean_db {
     cd "$BASE_DIR/$SITE_FOLDER"
     set_wordpress_config
     wp core install --url="http://$DOMAIN/$SITE_FOLDER"  --title="$PROJECT" --admin_user="admin" --admin_password="m123123" --admin_email="dejan@stuntcoders.com"
-    
+
     # Delete base plugins
     wp plugin delete hello
     wp plugin delete hello-dolly
     wp plugin delete akismet
-    
+
     # Install plugins
     install_wordpress_base_plugins
-    
+
     # Cleanup
     wp widget delete search-2
     wp post delete 1
@@ -520,29 +520,9 @@ function deploy_module {
 
     cd vagentotemp
 
-    if [ ! -f modman ]; then
-        modman create
-    fi
+    sudo rsync -rv --exclude 'Readme.md' --exclude 'modman' --exclude '.*' ./ ../
 
-    IFS=$'\r\n'
-    for line in $(grep -v -e '^#' -e '^\s*$' "modman"); do
-        IFS=$' \t\n'
-        read src dest <<< $line
-
-        if [ -z "$dest" ]; then
-            dest="$src"
-        fi
-
-        echo "-- Deploying $dest"
-
-        if [ -d "$src" ]; then
-            test -d "../"$dest || mkdir -p "../"$dest
-        fi
-
-        sudo cp -rf $src "../"$dest
-    done
     cd ../
-
 }
 
 function remove_module() {
@@ -748,11 +728,11 @@ if [ "$CONTROLLER" = "wp" ]; then
         wp theme update --all --path="$BASE_DIR/$SITE_FOLDER"
 
     fi
-    
+
     if [ "$ACTION" = "db-chdomain" ]; then
-    
+
         wp search-replace $3 $4
-        
+
     fi
 
     if [ "$ACTION" = "db-load" ]; then
@@ -794,11 +774,11 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
         esac
     fi
-    
+
     if [ "$ACTION" = "db-chdomain" ]; then
-    
+
         ruby -pi -e "gsub(/$4/, '$5')" $3
-        
+
     fi
 
     if [ "$ACTION" = "db-load" ]; then
