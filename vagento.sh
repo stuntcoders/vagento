@@ -526,7 +526,7 @@ function deploy_module {
 function check_for_update() {
     curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
 
-    if [ ! cmp $0 "__vagentoupdate.temp" > /dev/null ]; then
+    if ! diff $0 "__vagentoupdate.temp" > /dev/null ; then
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
     else
