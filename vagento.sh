@@ -723,13 +723,11 @@ if [ "$CONTROLLER" = "mage" ]; then
         case $3 in
             "clone")
                 clear
-                echo_title "MODULE"
-                echo "-> Cloning repository"
                 clone_module "$4"
-                echo "-> Deploying module"
+                echo "$(green)Deploying module$(normalize)"
                 deploy_module
                 sudo rm -r vagentotemp
-                echo "-> Done"
+                echo "$(green)Module deployed$(normalize)"
                 ;;
         esac
     fi
