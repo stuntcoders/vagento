@@ -114,7 +114,7 @@ Global Commands:
   $(green)wp set wp-config$(normalize)                    Set default wp-config
   $(green)wp set admin$(normalize)                        Set default user to admin/m123123
 
-  $(green)module clone$(normalize)                        Clone magento module
+  $(green)mage module clone$(normalize)                   Clone magento module
   $(green)mage list modules$(normalize)                   Lists all installed Mageto modules
   $(green)mage list web-settings$(normalize)              Lists all DB configuration
   $(green)mage db-chdomain name.sql old new$(normalize)   Replace old domain with new in file
@@ -650,23 +650,6 @@ if [ "$CONTROLLER" = "install" ]; then
     fi
 fi
 
-if [ "$CONTROLLER" = "module" ]; then
-    # Clone Module
-    # --------------------
-    if [ "$ACTION" = "clone" ]; then
-
-        clear
-        echo_title "MODULE"
-        echo "-> Cloning repository"
-        clone_module "$3"
-        echo "-> Deploying module"
-        deploy_module
-        sudo rm -r vagentotemp
-        echo "-> Done"
-
-    fi
-fi
-
 if [ "$CONTROLLER" = "wp" ]; then
 
     if [ "$ACTION" = "list" ]; then
@@ -731,6 +714,23 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
             "web-settings")
                 n98-magerun.phar config:get web/
+                ;;
+        esac
+    fi
+
+    if [ "$ACTION" = "module" ]; then
+
+        case $3 in
+            "clone")
+                clear
+                echo_title "MODULE"
+                echo "-> Cloning repository"
+                clone_module "$4"
+                echo "-> Deploying module"
+                deploy_module
+                sudo rm -r vagentotemp
+                echo "-> Done"
+                n98-magerun.phar sys:modules:list
                 ;;
         esac
     fi
