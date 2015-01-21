@@ -730,7 +730,6 @@ if [ "$CONTROLLER" = "mage" ]; then
                 deploy_module
                 sudo rm -r vagentotemp
                 echo "-> Done"
-                n98-magerun.phar sys:modules:list
                 ;;
         esac
     fi
