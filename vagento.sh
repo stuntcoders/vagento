@@ -333,6 +333,7 @@ function install_wordpress_base_plugins {
     wp plugin install google-analytics-for-wordpress --activate
     wp plugin install wp-pagenavi --activate
     wp plugin install wp-native-dashboard --activate
+    wp plugin install remove-category-url --activate
 }
 
 function install_wordpress_clean_db {
