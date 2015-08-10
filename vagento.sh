@@ -314,6 +314,13 @@ function install_magento_sample {
     mysql -u root -e "UPDATE magentodb.cms_page SET content='$CONTENT', root_template='one_column' WHERE identifier='home';"
 }
 
+function clean_wp_db {
+    mysql -u root -e "DROP DATABASE IF EXISTS wpdb"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wpdb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "FLUSH PRIVILEGES"
+}
+
 function set_wordpress_config {
 
     cd "$BASE_DIR/$SITE_FOLDER"
@@ -683,6 +690,7 @@ if [ "$CONTROLLER" = "wp" ]; then
 
         if [ -f $3 ]; then
             # Load database from file
+            clean_wp_db
             wp db import $3 --path="$BASE_DIR/$SITE_FOLDER"
         fi
 
