@@ -682,7 +682,7 @@ if [ "$CONTROLLER" = "wp" ]; then
 
     if [ "$ACTION" = "db-chdomain" ]; then
 
-        wp search-replace $3 $4
+        wp search-replace $3 $4 --path="$BASE_DIR/$SITE_FOLDER"
 
     fi
 
