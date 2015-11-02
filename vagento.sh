@@ -242,7 +242,8 @@ function install_magento {
 --admin_lastname "Jacimovic" \
 --admin_email "dejan@stuntcoders.com" \
 --admin_username "admin" \
---admin_password "m123123"
+--admin_password "m123123" \
+--admin_frontname "secure-access"
     fi
 
     n98-magerun.phar config:set web/seo/use_rewrites 1
