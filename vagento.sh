@@ -76,7 +76,7 @@ done
 
 THEME_DIR="$BASE_DIR/skin/frontend/$PROJECT/default"
 
-VERSION="0.8.1"
+VERSION="0.8.2"
 SCRIPT=${0##*/}
 
 USAGE="\
@@ -774,7 +774,7 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
             "htaccess")
                 rm -f .htaccess
-                wget https://raw.githubusercontent.com/magento/magento2/master/.htaccess
+                wget https://raw.githubusercontent.com/magento/magento2/develop/.htaccess
                 ;;
         esac
     fi
