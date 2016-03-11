@@ -104,6 +104,7 @@ Global Commands:
   $(green)install wp$(normalize)                          Install fresh WordPress
   $(green)install wp clean-db$(normalize)                 Install WordPress clean database
   $(green)install grunt$(normalize)                       Set Grunt tasks for defined theme
+  $(green)install hooks$(normalize)                       Install git commit hooks
 
   $(green)wp list plugins$(normalize)                     Lists all installed WP plugins
   $(green)wp list users$(normalize)                       Lists all WP users
@@ -655,6 +656,17 @@ if [ "$CONTROLLER" = "install" ]; then
         echo_bold "service grunf start"
         echo ""
 
+    fi
+
+    # Install Git commit hooks
+    # --------------------
+    if [ "$ACTION" = "hooks" ]; then
+
+        git clone -q --depth 1 https://github.com/stuntcoders/stunt_mage_pre_commit_hooks.git git_hooks
+        cd git_hooks && ./install
+        cd ../ && rm -rf git_hooks
+
+        echo_bold "Git commit hooks installed"
     fi
 fi
 
