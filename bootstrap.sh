@@ -75,6 +75,17 @@ if [ ! -f "/vagrant/.editorconfig" ]; then
   wget https://raw.githubusercontent.com/stuntcoders/vagento/master/.editorconfig -O /vagrant/.editorconfig
 fi
 
+# Add robots.txt for staging
+# --------------------
+if [ ! -f "/vagrant/.robots.txt.staging" ]; then
+  wget https://raw.githubusercontent.com/stuntcoders/vagento/master/.robots.txt.staging -O /vagrant/.robots.txt.staging
+fi
+
+# Add robots.txt for production
+# --------------------
+if [ ! -f "/vagrant/.robots.txt.production" ]; then
+  wget https://raw.githubusercontent.com/stuntcoders/vagento/master/.robots.txt.production -O /vagrant/.robots.txt.production
+fi
 
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
