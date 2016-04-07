@@ -102,6 +102,7 @@ sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/conf.d/name'
 sudo bash -c "echo '127.0.0.1 $DOMAIN' >> /etc/hosts"
 
 a2enmod rewrite
+a2enmod headers
 service apache2 restart
 
 # Mysql
