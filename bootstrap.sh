@@ -103,6 +103,7 @@ VHOST=$(cat <<EOF
   ServerName localhost
   <Directory "/vagrant">
     AllowOverride All
+    Require all granted
   </Directory>
 </VirtualHost>
 EOF
