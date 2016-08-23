@@ -117,7 +117,7 @@ a2enmod rewrite
 a2enmod headers
 service apache2 restart
 
-apt-get remove php5-snmp
+apt-get remove -y php5-snmp
 
 # Mysql
 # --------------------
