@@ -211,17 +211,19 @@ function install_magento {
     mysql -u root -e "FLUSH PRIVILEGES"
 
     if [ ! -f "$BASE_DIR/index.php" ]; then
-        wget http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
-        tar -zxvf magento-1.8.1.0.tar.gz
-        wget http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
-        tar -zxvf magento-sample-data-1.6.1.0.tar.gz
-        mv magento-sample-data-1.6.1.0/media/* magento/media/
-        mv magento-sample-data-1.6.1.0/magento_sample_data_for_1.6.1.0.sql magento/data.sql
+        wget https://github.com/OpenMage/magento-mirror/archive/magento-1.9.zip
+        unzip magento-1.9.zip
+        mv magento-mirror-magento-1.9 magento
+        wget http://vagento.stuntcoders.com/mage-archive/magento-sample-data-1.9.2.4.tar.gz
+        tar -zxvf magento-sample-data-1.9.2.4.tar.gz
+        mv magento-sample-data-1.9.2.4/media/* magento/media/
+        mv magento-sample-data-1.9.2.4/skin/* magento/skin/
+        mv magento-sample-data-1.9.2.4/magento_sample_data_for_1.9.2.4.sql magento/data.sql
         mv magento/* magento/.htaccess* .
         chmod -R o+w media var
         mysql -h localhost -u magentouser -ppassword magentodb < data.sql
         chmod o+w var var/.htaccess app/etc
-        rm -rf magento/ magento-sample-data-1.6.1.0/ magento-1.8.1.0.tar.gz magento-sample-data-1.6.1.0.tar.gz data.sql
+        rm -rf magento/ magento-sample-data-1.9.2.4/ magento-1.9.2.4.tar.gz magento-sample-data-1.9.2.4.tar.gz data.sql
     fi
 
     if [ ! -f "$BASE_DIR/app/etc/local.xml" ]; then
