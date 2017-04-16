@@ -7,7 +7,6 @@ This project will help you setup Vagrant, install Magento 1.8.1.0 with 1.6.1.0 s
 
 Make sure you have following installed
 -------------------
- * Ruby: [https://www.ruby-lang.org/](https://www.ruby-lang.org/)
  * Virtual Box: [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
  * Vagrant: [https://www.vagrantup.com/downloads.html](https://www.vagrantup.com/downloads.html)
 
