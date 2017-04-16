@@ -2,7 +2,7 @@ Vagento (Vagrant & Magento)
 ------------------
 The goal of this project is to use the least possible number of steps to set new project with [Vagrant](http://vagrantup.com/) and [Magento](http://magento.com/).
 
-This project will help you setup Vagrant, install Magento 1.8.1.0 with 1.6.1.0 sample data and set local environment on your Mac (not tested on Linux) as starting point for development.
+This project will help you setup Vagrant, install Magento 1.9 with 1.9.2.4 sample data and set local environment on your Mac (not tested on Linux) as starting point for development.
 
 
 Make sure you have following installed
