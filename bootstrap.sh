@@ -19,9 +19,9 @@ debconf-set-selections <<< "postfix postfix/mailname string $DOMAIN"
 debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
 apt-get install -y postfix
 
-# Install vim, curl, git
+# Install vim, curl, git, unzip
 # --------------------
-apt-get install -y vim git curl wget
+apt-get install -y vim git curl wget unzip
 
 # Install nodejs (with npm), and then grunt and yeoman
 # --------------------
