@@ -27,19 +27,19 @@ if [ "$ALREADY_CONFIGURED" == "n" ]; then
     echo "Project: $PROJECT with domain: $DOMAIN on IP: $IP is being created..."
 
 	echo 'Replacing default values in config...'
-    sed -i "s/stuntgento.local/$DOMAIN/g" Vagrantfile
-    sed -i "s/192.168.33.11/$IP/g" Vagrantfile
+    sed -i "" "s/stuntgento.local/$DOMAIN/g" Vagrantfile
+    sed -i "" "s/192.168.33.11/$IP/g" Vagrantfile
 
-    sed -i "s/stuntgento.local/$DOMAIN/g" ProjectReadme.md
-    sed -i "s/192.168.33.11/$IP/g" ProjectReadme.md
+    sed -i "" "s/stuntgento.local/$DOMAIN/g" ProjectReadme.md
+    sed -i "" "s/192.168.33.11/$IP/g" ProjectReadme.md
 
-    sed -i "s/stuntgento.local/$DOMAIN/g" Vagentofile
-    sed -i "s/stuntgento/$PROJECT/g" Vagentofile
-    sed -i "s/DOMAIN=\"\"/DOMAIN=\"$DOMAIN\"/g" Vagentofile
-    sed -i "s/192.168.33.11/$IP/g" Vagentofile
-    sed -i "s/NOK/$CURRENCY/g" Vagentofile
-    sed -i "s/hello@stuntcoders.com/$EMAIL/g" Vagentofile
-    sed -i "s/ALREADY_CONFIGURED=\"n\"/ALREADY_CONFIGURED=\"y\"/g" Vagentofile
+    sed -i "" "s/stuntgento.local/$DOMAIN/g" Vagentofile
+    sed -i "" "s/stuntgento/$PROJECT/g" Vagentofile
+    sed -i "" "s/DOMAIN=\"\"/DOMAIN=\"$DOMAIN\"/g" Vagentofile
+    sed -i "" "s/192.168.33.11/$IP/g" Vagentofile
+    sed -i "" "s/NOK/$CURRENCY/g" Vagentofile
+    sed -i "" "s/hello@stuntcoders.com/$EMAIL/g" Vagentofile
+    sed -i "" "s/ALREADY_CONFIGURED=\"n\"/ALREADY_CONFIGURED=\"y\"/g" Vagentofile
 
 	#Remove Readme.md and rename ProjectReadme.md to Readme.md
 	rm -rf Readme.md
