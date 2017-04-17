@@ -757,7 +757,7 @@ if [ "$CONTROLLER" = "mage" ]; then
 
     if [ "$ACTION" = "db-chdomain" ]; then
 
-        sed -i "s/$4/$5/g" $3
+        sed -i "" "s/$4/$5/g" $3
 
     fi
 
