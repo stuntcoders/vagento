@@ -788,7 +788,7 @@ if [ "$CONTROLLER" = "mage" ]; then
                 ;;
             "htaccess")
                 rm -f .htaccess
-                wget https://raw.githubusercontent.com/magento/magento2/develop/.htaccess
+                wget https://raw.githubusercontent.com/magento/magento2/2.2-develop/.htaccess
                 ;;
         esac
     fi
