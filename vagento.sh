@@ -245,16 +245,16 @@ function install_magento_defaults {
 }
 
 function clean_wp_db {
-    mysql -u root -e "DROP DATABASE IF EXISTS wordpress"
-    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wordpress"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "DROP DATABASE IF EXISTS wpdb"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wpdb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
 }
 
 function set_wordpress_config {
     cd "$BASE_DIR/$SITE_FOLDER"
 
-    wp core config --dbname=wordpress --dbuser=wpuser --dbpass=password --extra-php <<PHP
+    wp core config --dbname=wpdb --dbuser=wpuser --dbpass=password --extra-php <<PHP
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 PHP
@@ -263,9 +263,9 @@ PHP
 function install_wordpress_clean_db {
     cd $BASE_DIR
 
-    mysql -u root -e "DROP DATABASE IF EXISTS wordpress"
-    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wordpress"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "DROP DATABASE IF EXISTS wpdb"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wpdb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
 
     cd "$BASE_DIR/$SITE_FOLDER"
@@ -289,8 +289,8 @@ function install_wordpress {
 
     # Install WordPress (with wp-cli)
     # --------------------
-    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wordpress"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS wpdb"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost' IDENTIFIED BY 'password'"
     mysql -u root -e "FLUSH PRIVILEGES"
 
     if [ ! -f "$BASE_DIR/$SITE_FOLDER/wp-config.php" ]; then
@@ -484,7 +484,7 @@ if [ "$CONTROLLER" = "wp" ]; then
 
         case $3 in
             "admin")
-                mysql -u root -e "UPDATE wordpress.`wp_users` SET `user_pass` = MD5('sc123123') WHERE `wp_users`.`user_login` = "admin";;"
+                mysql -u root -e "UPDATE wpdb.`wp_users` SET `user_pass` = MD5('sc123123') WHERE `wp_users`.`user_login` = "admin";;"
                 ;;
             "wp-config")
                 set_wordpress_config
