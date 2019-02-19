@@ -328,7 +328,7 @@ function check_for_update() {
         echo "$(red)New Vagento version available$(normalize)"
         echo "Run \"$(green)vagento update$(normalize)\" to update to latest version"
     else
-        echo "You have latest version of vagento"
+        echo "$(green)Update check... You have the latest version of Vagento.(normalize)"
     fi
 
     sudo rm -r __vagentoupdate.temp
@@ -349,7 +349,7 @@ function check_for_update_and_update() {
 
        if ! diff $0 "__vagentoupdate.temp" > /dev/null ; then
            echo "$(red)New Vagento version available$(normalize)"
-           echo "$(yellow) Automatic update started"
+           echo "$(yellow)Automatic update started(normalize)"
            self_update
 
        else
