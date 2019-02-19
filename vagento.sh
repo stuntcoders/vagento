@@ -344,6 +344,21 @@ function self_update() {
     exit 0;
 }
 
+function check_for_update_and_update() {
+    curl --silent https://raw.githubusercontent.com/stuntcoders/vagento/master/vagento.sh > __vagentoupdate.temp
+
+       if ! diff $0 "__vagentoupdate.temp" > /dev/null ; then
+           echo "$(red)New Vagento version available$(normalize)"
+           echo "$(yellow) Automatic update started"
+           self_update
+
+       else
+           echo "You have latest version of vagento"
+       fi
+
+       sudo rm -r __vagentoupdate.temp
+}
+
 #### END OF ALL FUNCTIONS ####
 ##############################
 
@@ -353,6 +368,12 @@ function self_update() {
 if [ "$CONTROLLER" = "--help" -o "$CONTROLLER" = "" -o "$CONTROLLER" = "help" ]; then
 
     clear; echo -e "$USAGE";
+
+fi
+
+if [ ! "$CONTROLLER" = "--help" -a ! "$CONTROLLER" = "" -a ! "$CONTROLLER" = "help" ]; then
+
+    check_for_update_and_update
 
 fi
 
